@@ -12,8 +12,12 @@ const Lembrete = require('./models/Reminder');
 const User = require('./models/Users');
 
 // Importando as rotas
-const reminderRoutes = require('./routes/ReminderRoutes');
-const ReminderController = require('./controllers/ReminderController'); // Corrigido o caminho
+const reminderRoutes = require('./routes/reminderRoutes');
+const authRoutes = require('./routes/authRoutes'); // Corrigido o nome da variável
+
+// Importando os controllers
+const reminderController = require('./controllers/ReminderController'); // Corrigido o caminho
+const authControllers = require('./controllers/AuthController');
 
 // Template engine
 app.engine('handlebars', engine());
@@ -59,7 +63,10 @@ app.use((req, res, next) => {
 
 // Rotas
 app.use('/reminder', reminderRoutes);
-app.get('/', ReminderController.showReminders);
+app.use('/', authRoutes);
+
+app.get('/', reminderController.showReminders);
+
 
 // Conexão com o banco de dados
 // conn.sync({ force: true }) // cuidado: apaga tudo
