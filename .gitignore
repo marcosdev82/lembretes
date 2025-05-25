@@ -24,3 +24,5 @@ dist/
 build/
 
 # Dependency director
+
+db_data/

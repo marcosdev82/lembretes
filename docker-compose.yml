@@ -6,9 +6,8 @@ services:
     container_name: mysql_node
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: lembretes_db
-      MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
@@ -17,3 +16,8 @@ services:
 
 volumes:
   db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./db_data
+      o: bind

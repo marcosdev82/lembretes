@@ -1,22 +1,25 @@
-const { Datatype } = require('sequelize');
-
+const { DataTypes } = require('sequelize');
 const db = require('../db/conn');
 
-// User
+const User = require('./Users');
 
 const Reminder = db.define('Reminder', {
     title: {
-        type: Datatype.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     description: {
-        type: Datatype.TEXT,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     date: {
-        type: Datatype.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
     },
 });
+
+Reminder.belongsTo(User); 
+User.hasMany(Reminder);  
+
 
 module.exports = Reminder;

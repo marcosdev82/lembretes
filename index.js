@@ -1,5 +1,5 @@
 const express = require('express');
-const exphbs = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const flash = require('connect-flash');
@@ -8,13 +8,17 @@ const app = express();
 
 const conn = require('./db/conn');
 
+const Lembrete = require('./models/Reminder');
+const User = require('./models/Users');
+const f = require('session-file-store');
+
 // Template engine
-app.engine('handlebars', exphbs());
+app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 
 // Receber resposta da body
 app.use(
-    express.urlencoded({
+    express.urlencoded({ 
         extended: true,
     }),
 );
@@ -61,7 +65,7 @@ app.use((req, res, next) => {
     }
     next();
 });
-
+// conn.sync({ force: true })
 conn.sync()
     .then(() => {
         app.listen(3000, () => {
@@ -71,3 +75,4 @@ conn.sync()
     .catch((err) => {
         console.error('Erro ao conectar ao banco de dados:', err);
     });
+ 
