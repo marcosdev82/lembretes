@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const db = require('../db/conn');
 
-const User = require('./Users');
+const User = require('./User');
 
 const Reminder = db.define('Reminder', {
     title: {

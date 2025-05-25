@@ -9,7 +9,7 @@ const app = express();
 const conn = require('./db/conn');
 
 const Lembrete = require('./models/Reminder');
-const User = require('./models/Users');
+const User = require('./models/User');
 
 // Importando as rotas
 const reminderRoutes = require('./routes/reminderRoutes');
