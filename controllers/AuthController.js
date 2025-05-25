@@ -13,15 +13,14 @@ module.exports = class AuthController {
     static async registerPost(req, res) {
         const { name, email, password, confirmPassword } = req.body;
 
-        // confirmação de password
+        // confirmação de senha
         if (password !== confirmPassword) {
             req.flash('message', 'As senhas não conferem! Tente novamente.');
-            res.render('auth/register', {
+            return res.render('auth/register', {
                 message: req.flash('message'),
                 name,
                 email,
             });
-            return;
         }
 
         // verificar se o usuário já existe
@@ -29,12 +28,11 @@ module.exports = class AuthController {
 
         if (checkUserExists) {
             req.flash('message', 'E-mail já cadastrado! Tente novamente.');
-            res.render('auth/register', {
+            return res.render('auth/register', {
                 message: req.flash('message'),
                 name,
                 email,
             });
-            return;
         }
 
         // criar um password hash
@@ -58,15 +56,15 @@ module.exports = class AuthController {
             req.session.save(() => {
                 res.redirect('/');
             });
-    
+
         } catch (error) {
             console.error('Erro ao criar usuário:', error);
             req.flash('error', 'Erro ao cadastrar usuário. Tente novamente.');
-            res.render('auth/register', {
+            return res.render('auth/register', {
                 message: req.flash('error'),
                 name,
                 email,
             });
         }
     }
-}
+};
