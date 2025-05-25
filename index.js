@@ -41,9 +41,26 @@ app.use(
             secure: false,
             maxAge: 3600000, // 1 dia
             expires: new Date(Date.now() + 3600000),
+            httpOnly: true,
         },
     })
 );
+
+// Flash messages
+app.use(flash());
+
+// Public path
+app.use(express.static('public'));
+
+// set session to res   
+app.use((req, res, next) => {
+    if (req.session.userid) {
+        res.locals.session = req.session;
+    } else {
+        res.locals.session = null;
+    }
+    next();
+});
 
 conn.sync()
     .then(() => {
