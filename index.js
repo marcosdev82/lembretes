@@ -8,6 +8,43 @@ const app = express();
 
 const conn = require('./db/conn');
 
+// Template engine
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+// Receber resposta da body
+app.use(
+    express.urlencoded({
+        extended: true,
+    }),
+);
+
+app.use(express.json());
+
+// Session middleware   
+app.use(
+    session({
+        name: 'session',
+        secret: 'segredo',
+        resave: false,
+        saveUninitialized: true,
+        store: new FileStore({
+            logFn: function (message) {
+                console.log(message);
+            },
+            path: require('path').join(
+                require('os').tmpdir(),
+                'sessions',
+            ),
+        }),
+        cookie: {
+            secure: false,
+            maxAge: 3600000, // 1 dia
+            expires: new Date(Date.now() + 3600000),
+        },
+    })
+);
+
 conn.sync()
     .then(() => {
         app.listen(3000, () => {
