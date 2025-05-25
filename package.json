@@ -1,4 +1,15 @@
 {
+  "name": "lembretes",
+  "version": "1.0.0",
+  "description": "Projeto Node.js com Express, Sequelize e MySQL",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon  ./index.js localhost 3000",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "connect-flash": "^0.1.1",
@@ -9,8 +20,10 @@
     "express-handlebars": "^8.0.3",
     "express-session": "^1.18.1",
     "mysql2": "^3.14.1",
-    "nodemon": "^3.1.10",
     "sequelize": "^6.37.7",
     "session-file-store": "^1.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
