@@ -1,5 +1,6 @@
 # Node modules
 node_modules/
+db_data/
 
 # Logs
 logs/
@@ -24,5 +25,3 @@ dist/
 build/
 
 # Dependency director
-
-db_data/

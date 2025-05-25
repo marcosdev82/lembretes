@@ -10,44 +10,39 @@ const conn = require('./db/conn');
 
 const Lembrete = require('./models/Reminder');
 const User = require('./models/Users');
-const f = require('session-file-store');
+
+// Importando as rotas
+const reminderRoutes = require('./routes/ReminderRoutes');
+const ReminderController = require('./controllers/ReminderController'); // Corrigido o caminho
 
 // Template engine
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 
-// Receber resposta da body
-app.use(
-    express.urlencoded({ 
-        extended: true,
-    }),
-);
-
+// Body parser
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session middleware   
+// Session middleware
 app.use(
-    session({
-        name: 'session',
-        secret: 'segredo',
-        resave: false,
-        saveUninitialized: true,
-        store: new FileStore({
-            logFn: function (message) {
-                console.log(message);
-            },
-            path: require('path').join(
-                require('os').tmpdir(),
-                'sessions',
-            ),
-        }),
-        cookie: {
-            secure: false,
-            maxAge: 3600000, // 1 dia
-            expires: new Date(Date.now() + 3600000),
-            httpOnly: true,
-        },
-    })
+  session({
+    name: 'session',
+    secret: 'segredo',
+    resave: false,
+    saveUninitialized: true,
+    store: new FileStore({
+      logFn: function (message) {
+        console.log(message);
+      },
+      path: require('path').join(require('os').tmpdir(), 'sessions'),
+    }),
+    cookie: {
+      secure: false,
+      maxAge: 3600000, // 1 hora
+      expires: new Date(Date.now() + 3600000),
+      httpOnly: true,
+    },
+  })
 );
 
 // Flash messages
@@ -56,23 +51,24 @@ app.use(flash());
 // Public path
 app.use(express.static('public'));
 
-// set session to res   
+// Session disponível para as views
 app.use((req, res, next) => {
-    if (req.session.userid) {
-        res.locals.session = req.session;
-    } else {
-        res.locals.session = null;
-    }
-    next();
+  res.locals.session = req.session.userid ? req.session : null;
+  next();
 });
-// conn.sync({ force: true })
+
+// Rotas
+app.use('/reminder', reminderRoutes);
+app.get('/', ReminderController.showReminders);
+
+// Conexão com o banco de dados
+// conn.sync({ force: true }) // cuidado: apaga tudo
 conn.sync()
-    .then(() => {
-        app.listen(3000, () => {
-            console.log('Servidor rodando na porta 3000');
-        });
-    })
-    .catch((err) => {
-        console.error('Erro ao conectar ao banco de dados:', err);
+  .then(() => {
+    app.listen(3000, () => {
+      console.log('Servidor rodando na porta 3000');
     });
- 
+  })
+  .catch((err) => {
+    console.error('Erro ao conectar ao banco de dados:', err);
+  });
