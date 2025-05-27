@@ -6,18 +6,21 @@ const flash = require('connect-flash');
 
 const app = express();
 
+// Conexão com o banco
 const conn = require('./db/conn');
 
+// Models
 const Lembrete = require('./models/Reminder');
 const User = require('./models/User');
 
-// Importando as rotas
+// Rotas
 const reminderRoutes = require('./routes/reminderRoutes');
-const authRoutes = require('./routes/authRoutes'); // Corrigido o nome da variável
+const authRoutes = require('./routes/authRoutes');
 
-// Importando os controllers
-const reminderController = require('./controllers/ReminderController'); // Corrigido o caminho
+// Controllers
+const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
+
 
 // Template engine
 app.engine('handlebars', engine());
@@ -27,13 +30,13 @@ app.set('view engine', 'handlebars');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session middleware
+// Session
 app.use(
   session({
     name: 'session',
     secret: 'segredo',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: new FileStore({
       logFn: function (message) {
         console.log(message);
@@ -42,40 +45,40 @@ app.use(
     }),
     cookie: {
       secure: false,
-      maxAge: 3600000, // 1 hora
+      maxAge: 3600000,
       expires: new Date(Date.now() + 3600000),
       httpOnly: true,
     },
   })
 );
 
-// Flash messages
 app.use(flash());
 
-// Public path
-app.use(express.static('public'));
-
-// Session disponível para as views
 app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  res.locals.warning = req.flash('warning');
+  res.locals.message = req.flash('message');
   res.locals.session = req.session.userid ? req.session : null;
   next();
 });
 
+app.use(express.static('public'));
+
 // Rotas
 app.use('/reminder', reminderRoutes);
 app.use('/', authRoutes);
-
 app.get('/', reminderController.showReminders);
 
-
-// Conexão com o banco de dados
- conn.sync({ force: true }) // cuidado: apaga tudo
-//conn.sync()
+// Conexão com o banco
+conn
+  .sync() // use isto em produção
+  // .sync({ force: true }) 
   .then(() => {
     app.listen(3000, () => {
       console.log('Servidor rodando na porta 3000');
     });
   })
   .catch((err) => {
-    console.error('Erro ao conectar ao banco de dados:', err);
+    console.error('Erro ao conectar ao banco de dados:', err);  
   });

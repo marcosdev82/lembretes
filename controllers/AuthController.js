@@ -68,7 +68,7 @@ module.exports = class AuthController {
                 email,
             });
         }
- 
+
         // criar um password hash
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -79,23 +79,19 @@ module.exports = class AuthController {
             password: hashedPassword,
         };
 
-        // criar o usuário
         try {
             const createdUser = await User.create(user);
-
-            // inicializar a sessão
             req.session.userid = createdUser.id;
-            req.flash('success', 'Usuário cadastrado com sucesso!');
+            req.flash('success', 'Cadastro realizado com sucesso!');
 
             req.session.save(() => {
                 res.redirect('/');
             });
-
         } catch (error) {
-            console.error('Erro ao criar usuário:', error);
-            req.flash('error', 'Erro ao cadastrar usuário. Tente novamente.');
-            return res.render('auth/register', {
-                message: req.flash('error'),
+            console.error(error);
+            req.flash('message', 'Erro ao criar usuário! Tente novamente.');
+            res.render('auth/register', {
+                message: req.flash('message'),
                 name,
                 email,
             });
