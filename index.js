@@ -69,8 +69,8 @@ app.get('/', reminderController.showReminders);
 
 
 // Conexão com o banco de dados
-// conn.sync({ force: true }) // cuidado: apaga tudo
-conn.sync()
+ conn.sync({ force: true }) // cuidado: apaga tudo
+//conn.sync()
   .then(() => {
     app.listen(3000, () => {
       console.log('Servidor rodando na porta 3000');

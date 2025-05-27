@@ -33,7 +33,7 @@ module.exports = class AuthController {
 
         // inicializar a sessão
         req.session.userid = user.id;
-        req.flash('success', 'Login realizado com sucesso!');
+        req.flash('success', 'Llogogin realizado com sucesso!');
 
         req.session.save(() => {
             res.redirect('/');
@@ -68,7 +68,7 @@ module.exports = class AuthController {
                 email,
             });
         }
-
+ 
         // criar um password hash
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
