@@ -1,9 +1,9 @@
 module.exports = class SettingsController {
     static async showSettings(req, res) {
-        res.render('reminder/home');
+        res.render('settings/home');
     }
 
-    static async dashboard(req, res) {
+    static async dashboard(req, res) { 
         res.render('settings/dashboard')
     }
 }

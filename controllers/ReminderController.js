@@ -5,4 +5,9 @@ module.exports = class ReminderController {
     static async showReminders(req, res) {
         res.render('reminder/home')  
     }
+
+    
+    static async dashboard(req, res) { 
+        res.render('reminder/dashboard')
+    }
 }
