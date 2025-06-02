@@ -1,6 +1,9 @@
 module.exports = class SettingsController {
     static async showSettings(req, res) {
-        res.render('settings/home');
+        res.render('reminder/home');
+    }
+
+    static async dashboard(req, res) {
+        res.render('settings/dashboard')
     }
 }
-// This controller handles the settings page of the application.
