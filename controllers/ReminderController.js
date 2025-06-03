@@ -6,8 +6,22 @@ module.exports = class ReminderController {
         res.render('reminder/home');
     }
 
-    static dashboard(req, res) {
-        res.render('reminder/dashboard');
+    static async dashboard(req, res) {
+        const userid = req.session.userid;
+
+        const user = await User.findOne({
+            where: { id: userid },
+            include: Reminder,
+            plain: true
+        });
+
+        if (!user) {
+            return res.redirect('/login');
+        }
+
+        const reminders = user.Reminders.map((result) => result.dataValues);
+        
+        res.render('reminder/dashboard', { reminders });
     }
 
     static createReminder(req, res) {

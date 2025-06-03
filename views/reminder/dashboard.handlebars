@@ -1,5 +1,24 @@
 <div class="bg-white rounded-lg shadow p-10"> 
     <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Dashboard</h2>
-    <a href="/reminder/add">Criar lembretes </a>
-    <h3>lembretes</h3>
+    <a href="/reminder/add" class="text-blue-500 underline">Criar lembrete</a>
+
+    <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
+
+    {{#if reminders.length}}
+        <ul class="space-y-4">
+            {{#each reminders}}
+                <li class="p-4 border rounded-lg shadow-sm">
+                    <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
+                    {{#if description}}
+                        <p class="text-gray-600">{{description}}</p>
+                    {{/if}}
+                    {{#if date}}
+                        <p class="text-sm text-gray-500">Data: {{date}}</p>
+                    {{/if}}
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
+    {{/if}}
 </div>
