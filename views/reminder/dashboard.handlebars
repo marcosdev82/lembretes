@@ -15,11 +15,12 @@
                     {{#if date}}
                         <p class="text-sm text-gray-500">Data: {{date}}</p>
                     {{/if}}
-                    
-                    <div class="group">
-                        <button class="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="viewReminder('{{_id}}')">Ver</button>
-                        <button class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="deleteReminder('{{_id}}')">Excluir</button>
-                        <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="editReminder('{{_id}}')">Editar</button>
+                    <div class="group flex flex-row items-center justify-between gap-2">
+                        <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="editReminder('{{id}}')">Editar</button>
+                        <form action="/reminder/remove" method="post" class="flex flex-col items-end">
+                            <input type="hidden" type="submit" name="id" value="{{id}}">
+                            <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Excluir</button>
+                        </form>
                     </div>
                 </li>
             {{/each}}

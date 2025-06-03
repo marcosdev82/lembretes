@@ -20,7 +20,7 @@ module.exports = class ReminderController {
         }
 
         const reminders = user.Reminders.map((result) => result.dataValues);
-        
+
         res.render('reminder/dashboard', { reminders });
     }
 
@@ -45,6 +45,33 @@ module.exports = class ReminderController {
             });
         } catch (err) {
             console.error('Aconteceu um erro:', err);
+        }
+    }
+
+    static async removeReminder(req, res) {
+        const { id } = req.body;
+        const UserId = req.session.userid;
+
+        try {
+            const deleted = await Reminder.destroy({
+                where: { id, UserId }
+            });
+
+            if (deleted) {
+                req.flash('message', 'Lembrete removido com sucesso!');
+            } else {
+                req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
+            }
+
+            req.session.save(() => {
+                res.redirect('/reminder/dashboard');
+            });
+        } catch (err) {
+            console.error('Erro ao remover lembrete:', err);
+            req.flash('message', 'Erro ao tentar remover o lembrete.');
+            req.session.save(() => {
+                res.redirect('/reminder/dashboard');
+            });
         }
     }
 
