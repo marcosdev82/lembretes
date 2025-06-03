@@ -17,12 +17,10 @@ module.exports = class ReminderController {
     static async createReminderSave(req, res) {
         const reminder = {
             title: req.body.title,
-            description: req.body.description, // adicionado
-            date: req.body.date,               // adicionado
-            id: req.session.userid         // corrigido para o nome da chave estrangeira (caso seja `UserId`)
+            description: req.body.description,  
+            date: req.body.date,                
+            UserId: req.session.userid
         };
-
-        console.log(reminder)
 
         try {
             await Reminder.create(reminder);

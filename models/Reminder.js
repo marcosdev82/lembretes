@@ -10,11 +10,11 @@ const Reminder = db.define('Reminder', {
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
     },
     date: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
 });
 
