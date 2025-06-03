@@ -1,0 +1,26 @@
+<div class="bg-white rounded-lg shadow p-10"> 
+    <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Criar lembrete</h2>
+    <a href="/reminder/dashboard">Voltar</a>
+    <div class="bg-white rounded-lg shadow p-10"> 
+    <form action="/reminder/add" method="POST" class="max-w-md mx-auto space-y-4">
+
+        <div>
+            <label for="title" class="block text-gray-700 font-medium">Título</label>
+            <input 
+                type="text" 
+                id="title" 
+                name="title"
+                class="w-full mt-1 p-2 border border-gray-300 rounded 
+                focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                placeholder="Digite um lembrete..." />
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+            Salvar lembrete
+        </button>
+
+    </form>
+</div>
+
+</div>
