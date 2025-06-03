@@ -7,7 +7,7 @@
     {{#if reminders.length}}
         <ul class="space-y-4">
             {{#each reminders}}
-                <li class="p-4 border rounded-lg shadow-sm">
+                <li class="p-4 border rounded-lg shadow-sm flex flex-row items-center justify-between">
                     <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
                     {{#if description}}
                         <p class="text-gray-600">{{description}}</p>
@@ -15,6 +15,12 @@
                     {{#if date}}
                         <p class="text-sm text-gray-500">Data: {{date}}</p>
                     {{/if}}
+                    
+                    <div class="group">
+                        <button class="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="viewReminder('{{_id}}')">Ver</button>
+                        <button class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="deleteReminder('{{_id}}')">Excluir</button>
+                        <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="editReminder('{{_id}}')">Editar</button>
+                    </div>
                 </li>
             {{/each}}
         </ul>
