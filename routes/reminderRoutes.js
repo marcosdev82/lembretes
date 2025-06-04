@@ -8,6 +8,7 @@ const checkAuth = require('../helpers/auth').checkAuth;
 
 // Rotas
 router.get('/dashboard', checkAuth, ReminderController.dashboard);
+router.get('/home', checkAuth, ReminderController.showReminders);
 router.get('/add', checkAuth, ReminderController.createReminder); // Exibe o formulário
 router.post('/add', checkAuth, ReminderController.createReminderSave); // Salva o formulário 
 router.get('/edit/:id', checkAuth, ReminderController.updateReminder)

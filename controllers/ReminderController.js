@@ -2,8 +2,18 @@ const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 
 module.exports = class ReminderController {
-    static showReminders(req, res) {
-        res.render('reminder/home');
+    static async showReminders(req, res) {
+
+        const allReminders = await Reminder.findAll({
+            where: { UserId: req.session.userid },
+            include: User
+        });
+
+        const dataValues = allReminders.map((reminder) => reminder.get({ plain: true }));
+
+        console.log(dataValues)
+
+        res.render('reminder/home', { dataValues}); 
     }
 
     static async dashboard(req, res) {
