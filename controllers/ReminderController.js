@@ -49,7 +49,6 @@ module.exports = class ReminderController {
     }
 
     static async updateReminder(req, res) {
-
         const { id } = req.params;
 
         if (!id) {
@@ -58,25 +57,54 @@ module.exports = class ReminderController {
         }
 
         try {
-
-            const reminder = await Reminder.findOne({where: { id: id }});
-
+            const reminder = await Reminder.findOne({ where: { id }, row: true });
             if (!reminder) {
                 req.flash('message', 'Lembrete não encontrado.');
                 return res.redirect('/reminder/dashboard');
             }
 
-            res.redirect('/reminder/edit', { reminder });
+            // Renderiza a view de edição com os dados do lembrete
+            res.render('reminder/edit', { reminder: reminder.get({ plain: true }) });
 
         } catch (err) {
-            console.error('Erro ao remover lembrete:', err);
+            console.error('Erro ao buscar lembrete para edição:', err);
             req.flash('message', 'Erro ao tentar alterar o lembrete.');
             req.session.save(() => {
                 res.redirect('/reminder/dashboard');
             });
         }
+    }
 
+    static async updateReminderSave(req, res) {
+        const { id } = req.params;
 
+        const reminder = {
+            title: req.body.title,
+            description: req.body.description,
+            date: req.body.date
+        };
+
+        try {
+            const [updatedRows] = await Reminder.update(reminder, {
+                where: { id }
+            });
+
+            if (updatedRows === 0) {
+                req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
+                return res.redirect('/reminder/dashboard');
+            }
+
+            req.flash('message', 'Lembrete atualizado com sucesso!');
+            req.session.save(() => {
+                res.redirect('/reminder/dashboard');
+            });
+        } catch (err) {
+            console.error('Erro ao atualizar lembrete:', err);
+            req.flash('message', 'Erro ao tentar atualizar o lembrete.');
+            req.session.save(() => {
+                res.redirect('/reminder/dashboard');
+            });
+        }
     }
 
     static async removeReminder(req, res) {
