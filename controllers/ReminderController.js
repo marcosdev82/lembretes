@@ -58,14 +58,14 @@ module.exports = class ReminderController {
         }
 
         try {
-   
+
             const reminder = await Reminder.findOne({where: { id: id }});
 
             if (!reminder) {
                 req.flash('message', 'Lembrete não encontrado.');
                 return res.redirect('/reminder/dashboard');
             }
-            
+
             res.redirect('/reminder/edit', { reminder });
 
         } catch (err) {
