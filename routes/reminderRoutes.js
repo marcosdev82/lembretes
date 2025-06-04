@@ -10,6 +10,7 @@ const checkAuth = require('../helpers/auth').checkAuth;
 router.get('/dashboard', checkAuth, ReminderController.dashboard);
 router.get('/add', checkAuth, ReminderController.createReminder); // Exibe o formulário
 router.post('/add', checkAuth, ReminderController.createReminderSave); // Salva o formulário 
+router.get('/edit/:id', checkAuth, ReminderController.updateReminder)
 router.post('/remove', checkAuth, ReminderController.removeReminder)
 router.get('/', checkAuth, ReminderController.showReminders);
 

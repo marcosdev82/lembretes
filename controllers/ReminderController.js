@@ -48,6 +48,37 @@ module.exports = class ReminderController {
         }
     }
 
+    static async updateReminder(req, res) {
+
+        const { id } = req.params;
+
+        if (!id) {
+            req.flash('message', 'Lembrete não encontrado.');
+            return res.redirect('/reminder/dashboard');
+        }
+
+        try {
+   
+            const reminder = await Reminder.findOne({where: { id: id }});
+
+            if (!reminder) {
+                req.flash('message', 'Lembrete não encontrado.');
+                return res.redirect('/reminder/dashboard');
+            }
+            
+            res.redirect('/reminder/edit', { reminder });
+
+        } catch (err) {
+            console.error('Erro ao remover lembrete:', err);
+            req.flash('message', 'Erro ao tentar alterar o lembrete.');
+            req.session.save(() => {
+                res.redirect('/reminder/dashboard');
+            });
+        }
+
+
+    }
+
     static async removeReminder(req, res) {
         const { id } = req.body;
         const UserId = req.session.userid;
