@@ -10,25 +10,36 @@ module.exports = class ReminderController {
             return res.redirect('/login');
         }
 
-        let search = ''
-
-        if (req.query.search) {
-            search = req.query.search
-        }
+        const search = req.query.search || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5; // Quantidade por página
+        const offset = (page - 1) * limit;
 
         try {
-            const allReminders = await Reminder.findAll({
-                where: { 
+            const { count, rows } = await Reminder.findAndCountAll({
+                where: {
                     UserId: req.session.userid,
-                    title: {[op.like]: `%${like}%`}
+                    ...(search && {
+                        title: {
+                            [Op.like]: `%${search}%`
+                        }
+                    })
                 },
-                include: User
-                
+                include: User,
+                limit,
+                offset,
+                order: [['createdAt', 'DESC']]
             });
 
-            const dataValues = allReminders.map(reminder => reminder.get({ plain: true }));
+            const totalPages = Math.ceil(count / limit);
+            const dataValues = rows.map(reminder => reminder.get({ plain: true }));
 
-            res.render('reminder/home', { dataValues }); 
+            res.render('reminder/home', {
+                dataValues,
+                search,
+                currentPage: page,
+                totalPages
+            });
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
             req.flash('message', 'Erro ao carregar lembretes.');
