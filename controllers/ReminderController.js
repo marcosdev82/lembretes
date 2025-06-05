@@ -1,19 +1,39 @@
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 
+const { op } = require('sequelize')
+
 module.exports = class ReminderController {
     static async showReminders(req, res) {
+        if (!req.session.userid) {
+            req.flash('message', 'Sessão expirada. Faça login novamente.');
+            return res.redirect('/login');
+        }
 
-        const allReminders = await Reminder.findAll({
-            where: { UserId: req.session.userid },
-            include: User
-        });
+        let search = ''
 
-        const dataValues = allReminders.map((reminder) => reminder.get({ plain: true }));
+        if (req.query.search) {
+            search = req.query.search
+        }
 
-        console.log(dataValues)
+        try {
+            const allReminders = await Reminder.findAll({
+                where: { 
+                    UserId: req.session.userid,
+                    title: {[op.like]: `%${like}%`}
+                },
+                include: User
+                
+            });
 
-        res.render('reminder/home', { dataValues}); 
+            const dataValues = allReminders.map(reminder => reminder.get({ plain: true }));
+
+            res.render('reminder/home', { dataValues }); 
+        } catch (err) {
+            console.error('Erro ao carregar lembretes:', err);
+            req.flash('message', 'Erro ao carregar lembretes.');
+            res.redirect('/login');
+        }
     }
 
     static async dashboard(req, res) {

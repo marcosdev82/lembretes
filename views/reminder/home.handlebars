@@ -1,12 +1,31 @@
 <div class="bg-white rounded-lg shadow p-10"> 
     <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Home</h2>
 
+    <!-- Formulário de busca -->
+    <form action="/reminder/home" method="GET" class="mb-6">
+        <div class="flex gap-2">
+            <input
+                type="text"
+                name="search"
+                placeholder="Buscar lembretes..."
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                value="{{search}}"
+            />
+            <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+                Buscar
+            </button>
+        </div>
+    </form>
+
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
     {{#if dataValues.length}}
         <ul class="space-y-4">
             {{#each dataValues}}
-                <li class="p-4 border rounded-lg shadow-sm flex flex-row items-center justify-between">
+                <li class="p-4 border rounded-lg shadow-sm flex flex-col space-y-2">
                     <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
                     {{#if description}}
                         <p class="text-gray-600">{{description}}</p>
@@ -17,11 +36,10 @@
                     {{#if this.User.name}}
                         <p class="text-sm text-gray-500">Criado por: {{this.User.name}}</p>
                     {{/if}}
-                    
                 </li>
             {{/each}}
         </ul>
     {{else}}
-        <p class="text-gray-500">Nenhum lembrete encotrado.</p>
+        <p class="text-gray-500">Nenhum lembrete encontrado.</p>
     {{/if}}
 </div>
