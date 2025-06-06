@@ -1,7 +1,9 @@
+const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
+const { Op } = require('sequelize');
 
-const { op } = require('sequelize')
+sequelizePaginate.paginate(Reminder);
 
 module.exports = class ReminderController {
     static async showReminders(req, res) {
@@ -10,35 +12,40 @@ module.exports = class ReminderController {
             return res.redirect('/login');
         }
 
-        const search = req.query.search || '';
-        const page = parseInt(req.query.page) || 1;
-        const limit = 5; // Quantidade por página
-        const offset = (page - 1) * limit;
-
         try {
-            const { count, rows } = await Reminder.findAndCountAll({
-                where: {
-                    UserId: req.session.userid,
-                    ...(search && {
-                        title: {
-                            [Op.like]: `%${search}%`
-                        }
-                    })
-                },
-                include: User,
-                limit,
-                offset,
-                order: [['createdAt', 'DESC']]
+            const userId = req.session.userid;
+            const page = parseInt(req.query.page) || 1;
+            const limit = 2;
+            const search = req.query.search || '';
+
+            const whereCondition = {
+                UserId: userId,
+            };
+
+            if (search) {
+                whereCondition[Op.or] = [
+                    { title: { [Op.like]: `%${search}%` } },
+                    { description: { [Op.like]: `%${search}%` } },
+                ];
+            }
+
+            const { docs, pages: totalPages, total } = await Reminder.paginate({
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                page,
+                paginate: limit,
+                include: [{ model: User, attributes: ['id', 'name', 'email'] }],
             });
 
-            const totalPages = Math.ceil(count / limit);
-            const dataValues = rows.map(reminder => reminder.get({ plain: true }));
+            const reminders = docs.map(reminder => reminder.get({ plain: true }));
 
             res.render('reminder/home', {
-                dataValues,
+                reminders,
+                page,
+                totalPages,
+                total,
                 search,
-                currentPage: page,
-                totalPages
+                message: req.flash('message'),
             });
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);

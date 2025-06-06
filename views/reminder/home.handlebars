@@ -22,9 +22,9 @@
 
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
-    {{#if dataValues.length}}
+    {{#if reminders.length}}
         <ul class="space-y-4">
-            {{#each dataValues}}
+            {{#each reminders}}
                 <li class="p-4 border rounded-lg shadow-sm flex flex-col space-y-2">
                     <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
                     {{#if description}}
@@ -39,6 +39,24 @@
                 </li>
             {{/each}}
         </ul>
+
+        <div class="flex gap-2 mt-4">
+            {{#if currentPage}}
+                <a href="?page={{currentPage}}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>
+            {{/if}}
+
+            {{#each totalPages }}
+                <a href="?page={{this}}" class="px-3 py-1 {{#ifEquals ../currentPage this}}bg-blue-500 text-white{{else}}bg-gray-200{{/ifEquals}} rounded">
+                {{this}}
+                </a>
+            {{/each}}
+
+            {{#if totalPages}}
+                <a href="?page={{currentPage}}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>
+            {{/if}}
+        </div>
+
+
     {{else}}
         <p class="text-gray-500">Nenhum lembrete encontrado.</p>
     {{/if}}
