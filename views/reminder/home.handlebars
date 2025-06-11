@@ -39,26 +39,26 @@
                 </li>
             {{/each}}
         </ul>
-
-       <div class="flex gap-2 mt-4">
-            {{#if currentPage}}
-                {{#if (gt currentPage 1)}}
-                    <a href="?page={{subtract currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>
-                {{/if}}
+{{log search}} <!-- Para depuração -->
+    <div class="flex gap-2 mt-4">
+        {{#if currentPage}}
+            {{#if (gt currentPage 1)}}
+                <a href="?page={{subtract currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>
             {{/if}}
+        {{/if}}
 
-            {{#each (range 1 totalPages) as |page|}}
-                <a href="?page={{page}}&search={{search}}" class="px-3 py-1 {{#ifEquals ../currentPage page}}bg-blue-500 text-white{{else}}bg-gray-200{{/ifEquals}} rounded">
-                    {{page}}
-                </a>
-            {{/each}}
+        {{#each (range 1 totalPages) as |page|}}
+            <a href="?page={{page}}&search={{../search}}" class="px-3 py-1 {{#ifEquals ../currentPage page}}bg-blue-500 text-white{{else}}bg-gray-200{{/ifEquals}} rounded">
+                {{page}}
+            </a>
+        {{/each}}
 
-            {{#if currentPage}}
-                {{#if (lt currentPage totalPages)}}
-                    <a href="?page={{add currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>
-                {{/if}}
+        {{#if currentPage}}
+            {{#if (lt currentPage totalPages)}}
+                <a href="?page={{add currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>
             {{/if}}
-        </div>
+        {{/if}}
+    </div>
 
 
     {{else}}

@@ -17,6 +17,7 @@ module.exports = class ReminderController {
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
+            console.log('Search query:', search);
 
             const whereCondition = {
                 UserId: userId,
@@ -44,7 +45,7 @@ module.exports = class ReminderController {
                 currentPage: page,
                 totalPages: pages,
                 total,
-                search,
+                search: search,
                 message: req.flash('message'),
             });
         } catch (err) {
@@ -53,7 +54,6 @@ module.exports = class ReminderController {
             res.redirect('/login');
         }
     }
-     
 
     static async dashboard(req, res) {
         const userid = req.session.userid;

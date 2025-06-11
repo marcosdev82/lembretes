@@ -55,11 +55,9 @@ Handlebars.registerHelper('range', function(min, max) {
     return result;
 });
 
-// Helper para verificar se duas variáveis são iguais
 Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
 });
-
 // Body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
