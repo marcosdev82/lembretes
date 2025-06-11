@@ -48,6 +48,7 @@ module.exports = class ReminderController {
                 search: search,
                 message: req.flash('message'),
             });
+            
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
             req.flash('message', 'Erro ao carregar lembretes.');

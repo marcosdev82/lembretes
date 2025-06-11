@@ -33,7 +33,7 @@ module.exports = class AuthController {
 
         // inicializar a sessão
         req.session.userid = user.id;
-        req.flash('success', 'Llogogin realizado com sucesso!');
+        req.flash('success', 'Login realizado com sucesso!');
 
         req.session.save(() => {
             res.redirect('/');
