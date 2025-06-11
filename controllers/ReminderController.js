@@ -29,7 +29,7 @@ module.exports = class ReminderController {
                 ];
             }
 
-            const { docs, pages: totalPages, total } = await Reminder.paginate({
+            const { docs, pages, total } = await Reminder.paginate({
                 where: whereCondition,
                 order: [['createdAt', 'DESC']],
                 page,
@@ -41,8 +41,8 @@ module.exports = class ReminderController {
 
             res.render('reminder/home', {
                 reminders,
-                page,
-                totalPages,
+                currentPage: page,
+                totalPages: pages,
                 total,
                 search,
                 message: req.flash('message'),
@@ -53,6 +53,7 @@ module.exports = class ReminderController {
             res.redirect('/login');
         }
     }
+     
 
     static async dashboard(req, res) {
         const userid = req.session.userid;

@@ -40,19 +40,23 @@
             {{/each}}
         </ul>
 
-        <div class="flex gap-2 mt-4">
+       <div class="flex gap-2 mt-4">
             {{#if currentPage}}
-                <a href="?page={{currentPage}}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>
+                {{#if (gt currentPage 1)}}
+                    <a href="?page={{subtract currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>
+                {{/if}}
             {{/if}}
 
-            {{#each totalPages }}
-                <a href="?page={{this}}" class="px-3 py-1 {{#ifEquals ../currentPage this}}bg-blue-500 text-white{{else}}bg-gray-200{{/ifEquals}} rounded">
-                {{this}}
+            {{#each (range 1 totalPages) as |page|}}
+                <a href="?page={{page}}&search={{search}}" class="px-3 py-1 {{#ifEquals ../currentPage page}}bg-blue-500 text-white{{else}}bg-gray-200{{/ifEquals}} rounded">
+                    {{page}}
                 </a>
             {{/each}}
 
-            {{#if totalPages}}
-                <a href="?page={{currentPage}}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>
+            {{#if currentPage}}
+                {{#if (lt currentPage totalPages)}}
+                    <a href="?page={{add currentPage 1}}&search={{search}}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>
+                {{/if}}
             {{/if}}
         </div>
 

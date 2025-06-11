@@ -3,6 +3,7 @@ const { engine } = require('express-handlebars');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const flash = require('connect-flash');
+const Handlebars = require('handlebars');
 
 const app = express();
 
@@ -21,10 +22,43 @@ const authRoutes = require('./routes/authRoutes');
 const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
 
-
 // Template engine
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
+
+// Helper para verificar se a primeira variável é maior que a segunda
+Handlebars.registerHelper('gt', function(a, b) {
+    return a > b;
+});
+
+// Helper para verificar se a primeira variável é menor que a segunda
+Handlebars.registerHelper('lt', function(a, b) {
+    return a < b;
+});
+
+// Helper para somar dois números
+Handlebars.registerHelper('add', function(a, b) {
+    return a + b;
+});
+
+// Helper para subtrair dois números
+Handlebars.registerHelper('subtract', function(a, b) {
+    return a - b;
+});
+
+// Helper para criar um array de números
+Handlebars.registerHelper('range', function(min, max) {
+    const result = [];
+    for (let i = min; i <= max; i++) {
+        result.push(i);
+    }
+    return result;
+});
+
+// Helper para verificar se duas variáveis são iguais
+Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+});
 
 // Body parser
 app.use(express.urlencoded({ extended: true }));
