@@ -1,16 +1,21 @@
-const { Sequelize } = require('sequelize')
+const { Sequelize } = require('sequelize');
+const config = require('../config'); // Importando a configuração
 
-const sequelize = new Sequelize('lembretes_db', 'root', 'password', {
-    host: 'localhost', 
-    port: 3307, // porta trocada devido conflito no docker
-    dialect: 'mysql'
-})
+const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PASSWORD, {
+    host: config.DB_HOST,
+    port: config.DB_PORT,
+    dialect: 'mysql',
+});
 
-try {
-    sequelize.authenticate()
-    console.log('Conectado com sucesso! 🚀')
-} catch (error) {
-    console.error('Erro ao conectar:', error + '❌') 
-}
+const authenticateDB = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Conectado com sucesso! 🚀');
+    } catch (error) {
+        console.error('Erro ao conectar:', error + '❌');
+    }
+};
 
-module.exports = sequelize
+authenticateDB();
+
+module.exports = sequelize;
