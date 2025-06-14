@@ -57,21 +57,53 @@ module.exports = class ReminderController {
     }
 
     static async dashboard(req, res) {
-        const userid = req.session.userid;
-
-        const user = await User.findOne({
-            where: { id: userid },
-            include: Reminder,
-            plain: true
-        });
-
-        if (!user) {
+        if (!req.session.userid) {
+            req.flash('message', 'Sessão expirada. Faça login novamente.');
             return res.redirect('/login');
         }
 
-        const reminders = user.Reminders.map((result) => result.dataValues);
+        try {
+            const userId = req.session.userid;
+            const page = parseInt(req.query.page) || 1;
+            const limit = 2;
+            const search = req.query.search || '';
+            console.log('Search query:', search);
 
-        res.render('reminder/dashboard', { reminders });
+            const whereCondition = {
+                UserId: userId,
+            };
+
+            if (search) {
+                whereCondition[Op.or] = [
+                    { title: { [Op.like]: `%${search}%` } },
+                    { description: { [Op.like]: `%${search}%` } },
+                ];
+            }
+
+            const { docs, pages, total } = await Reminder.paginate({
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                page,
+                paginate: limit,
+                include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+            });
+
+            const reminders = docs.map(reminder => reminder.get({ plain: true }));
+
+            res.render('reminder/dashboard', {
+                reminders,
+                currentPage: page,
+                totalPages: pages,
+                total,
+                search: search,
+                message: req.flash('message'),
+            });
+            
+        } catch (err) {
+            console.error('Erro ao carregar lembretes:', err);
+            req.flash('message', 'Erro ao carregar lembretes.');
+            res.redirect('/login');
+        }
     }
 
     static createReminder(req, res) {
