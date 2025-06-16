@@ -2,7 +2,7 @@
   "name": "lembretes",
   "version": "1.0.0",
   "description": "Projeto Node.js com Express, Sequelize e MySQL",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon  ./index.js localhost 3000",
     "dev": "nodemon index.js"
