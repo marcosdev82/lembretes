@@ -95,6 +95,7 @@ module.exports = class ReminderController {
                 currentPage: page,
                 totalPages: pages,
                 total,
+                limit,
                 search: search,
                 message: req.flash('message'),
             });
