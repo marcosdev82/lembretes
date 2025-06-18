@@ -16,12 +16,27 @@
             </div>
 
             <button type="submit"
+                id="submitBtn"
                 class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
-
-                Atualizar 
+                <span id="btnText">Atualizar</span>
+                <span id="btnLoader" class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 inline-block"></span>
             </button>
 
+
         </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('submitBtn');
+                const loader = document.getElementById('btnLoader');
+                const text = document.getElementById('btnText');
+
+                btn.addEventListener('click', function () {
+                   // btn.disabled = true;
+                    text.classList.add('hidden');
+                    loader.classList.remove('hidden');
+                });
+            });
+        </script>
     </div>
 
 </div>
