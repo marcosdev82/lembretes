@@ -143,7 +143,7 @@ module.exports = class ReminderController {
             const reminder = await Reminder.findOne({ where: { id }, row: true });
             if (!reminder) {
                 req.flash('message', 'Lembrete não encontrado.');
-                return res.redirect('/reminder/dashboard');
+                return res.redirect(`/reminder/edit/${id}`);
             }
 
             // Renderiza a view de edição com os dados do lembrete
