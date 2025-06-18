@@ -4,9 +4,8 @@
   "description": "Projeto Node.js com Express, Sequelize e MySQL",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.js",
-    "build": "babel . -d dist --ignore node_modules,dist,public,sessions,db_data"
+    "start": "nodemon  ./index.js localhost 3000",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -29,9 +28,10 @@
     "zod": "^3.25.64"
   },
   "devDependencies": {
-    "@babel/cli": "^7.27.2",
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
-    "nodemon": "^3.1.10"
+    "babel-loader": "^10.0.0",
+    "nodemon": "^3.1.10",
+    "webpack-cli": "^6.0.1"
   }
 }

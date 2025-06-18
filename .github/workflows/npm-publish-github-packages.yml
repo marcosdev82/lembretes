@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +18,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '20' # ou a versão que você estiver usando
 
     - name: Instalar dependências
       run: npm install
@@ -25,13 +26,22 @@ jobs:
     - name: Build com Babel
       run: npm run build
 
-    - name: Criar arquivo .env
+    - name: Testar aplicação (opcional)
+      run: echo "Adicione seus testes aqui ou remova esta etapa."
+
+    - name: Iniciar aplicação (exemplo para testes)
+      run: npm start
+
+    - name: Set environment variables
       run: |
         echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
         echo "DB_USER=${{ secrets.DB_USER }}" >> .env
         echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-
-    - name: Iniciar aplicação (exemplo para testes)
-      run: npm start
+    env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
