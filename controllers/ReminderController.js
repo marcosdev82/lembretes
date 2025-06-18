@@ -119,11 +119,12 @@ module.exports = class ReminderController {
         };
 
         try {
-            await Reminder.create(reminder);
+            const createdReminder = await Reminder.create(reminder);
 
             req.flash('message', 'Lembrete criado com sucesso!');
             req.session.save(() => {
-                res.redirect('/reminder/dashboard');
+                // Redirecionar para a área de edição do lembrete
+                res.redirect(`/reminder/edit/${createdReminder.id}`);
             });
         } catch (err) {
             console.error('Aconteceu um erro:', err);
