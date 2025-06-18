@@ -143,7 +143,7 @@ module.exports = class ReminderController {
             const reminder = await Reminder.findOne({ where: { id }, row: true });
             if (!reminder) {
                 req.flash('message', 'Lembrete não encontrado.');
-                return res.redirect(`/reminder/edit/${id}`);
+                return res.redirect('/reminder/dashboard');
             }
 
             // Renderiza a view de edição com os dados do lembrete
@@ -179,7 +179,7 @@ module.exports = class ReminderController {
 
             req.flash('message', 'Lembrete atualizado com sucesso!');
             req.session.save(() => {
-                res.redirect('/reminder/dashboard');
+                return res.redirect(`/reminder/edit/${id}`);
             });
         } catch (err) {
             console.error('Erro ao atualizar lembrete:', err);
