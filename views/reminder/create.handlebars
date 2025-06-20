@@ -16,15 +16,23 @@
             </div>
 
             <div>
-                <label for="description" class="block text-gray-700 font-medium">Título</label>
+                <label for="description" class="block text-gray-700 font-medium">Descrição</label>
                 <textarea 
                     rows="4"
-                    cols="50"
-                    type="text" 
                     id="description" 
                     name="description"
                     class="w-full mt-1 p-2 border border-gray-300 rounded 
                     focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <div>
+                <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
+                <input 
+                    type="date" 
+                    id="date" 
+                    name="date"
+                    class="w-full mt-1 p-2 border border-gray-300 rounded 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <button type="submit"
@@ -35,6 +43,7 @@
             </button>
 
         </form>
+
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const btn = document.getElementById('submitBtn');
@@ -42,7 +51,6 @@
                 const text = document.getElementById('btnText');
 
                 btn.addEventListener('click', function () {
-                   // btn.disabled = true;
                     text.classList.add('hidden');
                     loader.classList.remove('hidden');
                 });
@@ -50,5 +58,4 @@
         </script>
 
     </div>
-
 </div>
