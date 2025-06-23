@@ -18,4 +18,4 @@ function renderPagination(currentPage, totalPages, search) {
     return paginationHtml;
 }
 
-module.exports = renderPagination;
+module.exports = renderPagination; 

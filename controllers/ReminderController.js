@@ -2,7 +2,7 @@ const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 const renderPagination = require('../components/pagination');
-const { Op } = require('sequelize');
+const { Op } = require('sequelize'); 
 
 sequelizePaginate.paginate(Reminder);
 
