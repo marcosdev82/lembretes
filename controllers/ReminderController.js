@@ -1,6 +1,7 @@
 const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
+const renderPagination = require('../components/pagination');
 const { Op } = require('sequelize');
 
 sequelizePaginate.paginate(Reminder);
@@ -19,9 +20,7 @@ module.exports = class ReminderController {
             const search = req.query.search || '';
             console.log('Search query:', search);
 
-            const whereCondition = {
-                UserId: userId,
-            };
+            const whereCondition = { UserId: userId };
 
             if (search) {
                 whereCondition[Op.or] = [
@@ -39,6 +38,7 @@ module.exports = class ReminderController {
             });
 
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
+            const paginationHtml = renderPagination(page, pages, search);
 
             res.render('reminder/home', {
                 reminders,
@@ -47,6 +47,7 @@ module.exports = class ReminderController {
                 total,
                 search: search,
                 message: req.flash('message'),
+                paginationHtml, // Adiciona a HTML da paginação
             });
             
         } catch (err) {
