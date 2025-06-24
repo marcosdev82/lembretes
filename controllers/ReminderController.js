@@ -37,8 +37,10 @@ module.exports = class ReminderController {
                 include: [{ model: User, attributes: ['id', 'name', 'email'] }],
             });
 
+            const showPatination = (total > limit) && true
+
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
-            const paginationHtml = renderPagination(page, pages, search);
+            const paginationHtml = renderPagination(page, pages, showPatination, search);
 
             res.render('reminder/home', {
                 reminders,
