@@ -143,27 +143,31 @@ module.exports = class ReminderController {
         }
 
         try {
-            const reminder = await Reminder.findOne({ where: { id }, row: true });
-            if (!reminder) {
+            const reminderInstance = await Reminder.findOne({ where: { id } });
+
+            if (!reminderInstance) {
                 req.flash('message', 'Lembrete não encontrado.');
                 return res.redirect('/reminder/dashboard');
             }
 
-            // Renderiza a view de edição com os dados do lembrete
-            res.render('reminder/edit', { reminder: reminder.get({ plain: true }) });
+            const reminder = reminderInstance.get({ plain: true });
+
+            // Formata a data para input type="date"
+            if (reminder.date) {
+                reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+            }
+
+            res.render('reminder/edit', { reminder });
 
         } catch (err) {
             console.error('Erro ao buscar lembrete para edição:', err);
             req.flash('message', 'Erro ao tentar alterar o lembrete.');
-            req.session.save(() => {
-                res.redirect('/reminder/dashboard');
-            });
+            req.session.save(() => res.redirect('/reminder/dashboard'));
         }
     }
 
     static async updateReminderSave(req, res) {
         const { id } = req.params;  
-
 
         const rawDate = req.body.date;
         const date = parseISO(rawDate); // converte "2025-06-24" em objeto Date
