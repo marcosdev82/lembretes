@@ -3,6 +3,7 @@ const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 const renderPagination = require('../components/pagination');
 const { Op } = require('sequelize'); 
+const { isValid, parseISO } = require('date-fns');
 
 sequelizePaginate.paginate(Reminder);
 
@@ -167,7 +168,7 @@ module.exports = class ReminderController {
         const reminder = {
             title: req.body.title,
             description: req.body.description,
-            date: req.body.date
+            // date: isValid(parseISO(req.body.date))
         };
 
         try {
