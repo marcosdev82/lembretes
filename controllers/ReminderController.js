@@ -19,7 +19,6 @@ module.exports = class ReminderController {
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
-            console.log('Search query:', search);
 
             const whereCondition = { UserId: userId };
 
@@ -163,14 +162,18 @@ module.exports = class ReminderController {
     }
 
     static async updateReminderSave(req, res) {
-        const { id } = req.params;
+        const { id } = req.params;  
+
+
+        const rawDate = req.body.date;
+        const date = parseISO(rawDate); // converte "2025-06-24" em objeto Date
 
         const reminder = {
             title: req.body.title,
             description: req.body.description,
-            // date: isValid(parseISO(req.body.date))
+            date,
         };
-
+        
         try {
             const [updatedRows] = await Reminder.update(reminder, {
                 where: { id }
