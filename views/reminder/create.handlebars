@@ -1,6 +1,6 @@
 <div class="bg-white rounded-lg shadow p-10"> 
-    <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Criar lembrete</h2>
-    <a href="/reminder/dashboard">Voltar</a>
+    <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Adicionar lembrete</h2>
+    <a href="/reminder/dashboard" class="text-blue-500 underline">Todos</a>
     <div class="bg-white rounded-lg p-10"> 
         <form action="/reminder/add" method="POST" class="max-w-md mx-auto space-y-4">
 
@@ -15,12 +15,47 @@
                     placeholder="Digite um lembrete..." />
             </div>
 
+            <div>
+                <label for="description" class="block text-gray-700 font-medium">Descrição</label>
+                <textarea 
+                    rows="4"
+                    id="description" 
+                    name="description"
+                    class="w-full mt-1 p-2 border border-gray-300 rounded 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <div>
+                <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
+                <input 
+                    type="date" 
+                    id="date" 
+                    name="date"
+                    class="w-full mt-1 p-2 border border-gray-300 rounded 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
             <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
-                Salvar lembrete
+                id="submitBtn"
+                class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                <span id="btnText">Salvar</span>
+                <span id="btnLoader" class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 inline-block"></span>
             </button>
 
         </form>
-    </div>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('submitBtn');
+                const loader = document.getElementById('btnLoader');
+                const text = document.getElementById('btnText');
+
+                btn.addEventListener('click', function () {
+                    text.classList.add('hidden');
+                    loader.classList.remove('hidden');
+                });
+            });
+        </script>
+
+    </div>
 </div>

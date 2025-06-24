@@ -1,9 +1,10 @@
 <div class="bg-white rounded-lg shadow p-10"> 
-    <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Editando lembrete</h2>
-    <a href="/reminder/dashboard">Voltar</a>
+    <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Atualizar lembrete</h2>
+    <a href="/reminder/dashboard" class="text-blue-500 underline">Todos</a>
     <div class="bg-white rounded-lg p-10"> 
 
         <form action="/reminder/edit/{{reminder.id}}" method="POST" class="max-w-md mx-auto space-y-4">
+            
             <div>
                 <label for="title" class="block text-gray-700 font-medium">Título</label>
                 <input 
@@ -13,14 +14,53 @@
                     class="w-full mt-1 p-2 border border-gray-300 rounded 
                     focus:outline-none focus:ring-2 focus:ring-blue-500" 
                     placeholder="Digite um lembrete..." value="{{reminder.title}}" />
+            </div>  
+
+            <div>
+                <label for="description" class="block text-gray-700 font-medium">Título</label>
+                <textarea 
+                    rows="4"
+                    cols="50"
+                    type="text" 
+                    id="description" 
+                    name="description"
+                    class="w-full mt-1 p-2 border border-gray-300 rounded 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500">{{reminder.description}}</textarea>
+            </div>
+
+            <div>
+                <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
+                <input 
+                    type="date" 
+                    id="date" 
+                    name="date"
+                    value="{{reminder.date}}"
+                    class="w-full mt-1 p-2 border border-gray-300 rounded 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
-                Editar lembrete
+                id="submitBtn"
+                class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+                <span id="btnText">Atualizar</span>
+                <span id="btnLoader" class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 inline-block"></span>
             </button>
 
+
         </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('submitBtn');
+                const loader = document.getElementById('btnLoader');
+                const text = document.getElementById('btnText');
+
+                btn.addEventListener('click', function () {
+                   // btn.disabled = true;
+                    text.classList.add('hidden');
+                    loader.classList.remove('hidden');
+                });
+            });
+        </script>
     </div>
 
 </div>
