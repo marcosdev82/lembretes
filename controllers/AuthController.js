@@ -102,4 +102,56 @@ module.exports = class AuthController {
         req.session.destroy()
         res.redirect('/login')
     }
+
+    static async showUsers(req, res) {
+        if (!req.session.userid) {
+            req.flash('message', 'Sessão expirada. Faça login novamente.');
+            return res.redirect('/login');
+        }
+
+        try {
+            const userId = req.session.userid;
+            const page = parseInt(req.query.page) || 1;
+            const limit = 2;
+            const search = req.query.search || '';
+
+            const whereCondition = { UserId: userId };
+
+            if (search) {
+                whereCondition[Op.or] = [
+                    { title: { [Op.like]: `%${search}%` } },
+                    { description: { [Op.like]: `%${search}%` } },
+                ];
+            }
+
+            const { docs, pages, total } = await Users.paginate({
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                page,
+                paginate: limit,
+                include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+            });
+
+            const showPatination = (total > limit) && true
+
+            const reminders = docs.map(users => users.get({ plain: true }));
+            const paginationHtml = renderPagination(page, pages, showPatination, search);
+
+            res.render('auth/users', {
+                reminders,
+                currentPage: page,
+                totalPages: pages,
+                total,
+                search: search,
+                message: req.flash('message'),
+                paginationHtml, // Adiciona a HTML da paginação
+            });
+            
+        } catch (err) {
+            console.error('Erro ao carregar lembretes:', err);
+            req.flash('message', 'Erro ao carregar lembretes.');
+            res.redirect('/login');
+        }
+    }
+    
 };
