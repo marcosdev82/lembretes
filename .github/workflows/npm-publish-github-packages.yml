@@ -1,4 +1,4 @@
-name: Build and Deploy Node.js App
+name: Docker Build and Deploy
 
 on:
   push:
@@ -8,30 +8,23 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Set environment variables
+        run: |
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
 
-    - name: Instalar dependências
-      run: npm install
+      - name: Build da imagem Docker
+        run: docker build -t meu-node-app .
 
-    - name: Build com Babel
-      run: npm run build
-
-    - name: Set environment variables
-      run: |
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-
-    - name: Iniciar aplicação (exemplo para testes)
-      run: npm start
+      - name: Rodar docker-compose (opcional para testes)
+        run: docker-compose up -d
