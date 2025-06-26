@@ -5,13 +5,13 @@ const dbConfigSchema = z.object({
     DB_USER: z.string().default('root'),
     DB_PASSWORD: z.string().min(1, "DB_PASSWORD é obrigatório"),
     DB_HOST: z.string().default('localhost'),
-    DB_PORT: z.string().transform((val) => {
-        const num = parseInt(val, 10);
+    DB_PORT: z.string().default('3307').transform((val) => {
+    const num = parseInt(val, 10);
         if (isNaN(num) || num < 1 || num > 65535) {
             throw new Error("DB_PORT deve ser um número válido entre 1 e 65535");
         }
         return num;
-    }).default('3307'), 
+    }),
 });
 
 
