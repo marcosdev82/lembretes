@@ -1,3 +1,4 @@
+require('dotenv').config(); // <- Isto é essencial para ler o .env
 
 const config = require('./config');
 const express = require('express');
@@ -7,6 +8,7 @@ const FileStore = require('session-file-store')(session);
 const flash = require('connect-flash');
 const Handlebars = require('handlebars');
 const HelperPagination = require('./helpers/pagination');
+
 
 const app = express();
 

@@ -1,10 +1,10 @@
-require('dotenv').config(); // Carrega variáveis do arquivo .env
+require('dotenv').config();
 const { z } = require('zod');
 
-const dbConfigSchema = z.object({
-  DB_NAME: z.string().default('lembretes_db'),
-  DB_USER: z.string().default('root'),
-  DB_PASSWORD: z.string().min(1, "DB_PASSWORD é obrigatório"),
+const schema = z.object({
+  DB_NAME: z.string(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
   DB_HOST: z.string().default('localhost'),
   DB_PORT: z.preprocess(
     (val) => val ?? '3306',
@@ -18,10 +18,10 @@ const dbConfigSchema = z.object({
   ),
 });
 
-const parsed = dbConfigSchema.safeParse(process.env);
+const parsed = schema.safeParse(process.env);
 
 if (!parsed.success) {
-  console.error("Erro na configuração do banco de dados:", parsed.error.format());
+  console.error("Erro na validação das variáveis de ambiente:", parsed.error.format());
   process.exit(1);
 }
 
