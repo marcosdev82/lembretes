@@ -1,4 +1,5 @@
 const { z } = require('zod');
+require('dotenv').config(); // Carrega variáveis do .env
 
 const dbConfigSchema = z.object({
     DB_NAME: z.string().default('lembretes_db'),
