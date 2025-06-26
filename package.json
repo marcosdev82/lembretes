@@ -4,8 +4,9 @@
   "description": "Projeto Node.js com Express, Sequelize e MySQL",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon  ./index.js localhost 3000",
-    "dev": "nodemon index.js"
+    "start": "nodemon ./index.js localhost 3000",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step needed'"
   },
   "keywords": [],
   "author": "",
