@@ -8,14 +8,13 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Set environment variables
+      - name: Criar arquivo .env com secrets
         run: |
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
           echo "DB_USER=${{ secrets.DB_USER }}" >> .env
@@ -23,8 +22,11 @@ jobs:
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
           echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
 
+      - name: Login no Docker Hub (se necessário)
+        run: echo "Login opcional aqui"
+
       - name: Build da imagem Docker
         run: docker build -t meu-node-app .
 
-      - name: Rodar docker-compose (opcional para testes)
-        run: docker-compose up -d
+      - name: Subir containers com Docker Compose
+        run: docker compose up -d

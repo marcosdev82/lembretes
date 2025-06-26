@@ -16,7 +16,9 @@ services:
       - db_data:/var/lib/mysql
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: node_app
     restart: unless-stopped
     ports:
@@ -24,16 +26,15 @@ services:
     env_file:
       - .env
     environment:
-      DB_NAME: lembretes_db
-      DB_USER: root
-      DB_PASSWORD: password
-      DB_HOST: db # serviço db do compose
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
       DB_PORT: 3306
     depends_on:
       - db
     volumes:
-      - .:/app # para hot reload local, remova se não quiser
+      - .:/app
 
 volumes:
   db_data:
-    driver: local
