@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       DB_NAME: lembretes_db
       DB_USER: root

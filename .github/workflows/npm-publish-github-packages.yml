@@ -1,35 +1,37 @@
-name: Build and Deploy Node.js App
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_node
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: lembretes_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  app:
+    build: .
+    container_name: node_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      DB_NAME: lembretes_db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_HOST: db # serviço db do compose
+      DB_PORT: 3306
+    depends_on:
+      - db
+    volumes:
+      - .:/app # para hot reload local, remova se não quiser
 
-jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Instalar dependências
-      run: npm install
-
-    - name: Set environment variables
-      run: |
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-
-    - name: Iniciar aplicação (exemplo para testes)
-      run: npm start
+volumes:
+  db_data:
+    driver: local
