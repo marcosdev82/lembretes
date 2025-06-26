@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expõe a porta que seu app usará
-EXPOSE 3000
+EXPOSE 3000 
 
 # Variáveis de ambiente (você pode sobrescrever no docker-compose ou pipeline)
 ENV DB_NAME=lembretes_db
