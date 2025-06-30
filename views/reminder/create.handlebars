@@ -9,7 +9,7 @@
           <label for="title" class="block text-gray-700 font-medium">Título</label>
           <input type="text" id="title" name="title"
             class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Digite um lembrete..." />
+            placeholder="Digite um lembrete..." required />
         </div>
 
         <div>
@@ -19,9 +19,34 @@
         </div>
 
         <div>
+          <label for="post_content" class="block text-gray-700 font-medium">Conteúdo</label>
+          <textarea rows="6" id="post_content" name="post_content"
+            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Conteúdo completo do lembrete..."></textarea>
+        </div>
+
+        <div>
           <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
-          <input type="date" id="date" name="date"
+          <input type="datetime-local" id="date" name="date"
             class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
+          <input type="datetime-local" id="post_expire" name="post_expire"
+            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label for="post_status" class="block text-gray-700 font-medium">Status da publicação</label>
+          <select id="post_status" name="post_status"
+            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="draft">Rascunho</option>
+            <option value="published">Publicado</option>
+            <option value="pending">Pendente</option>
+            <option value="trashed">Lixeira</option>
+            <option value="private">Privado</option>
+          </select>
         </div>
 
         <button type="submit" id="submitBtn"
@@ -34,58 +59,11 @@
     </div>
   </main>
 
-  <!-- Sidebar à direita -->
+  <!-- Sidebar direita (opcional, pode ser usada para tags, categorias, autor, etc.) -->
   <aside class="w-64 bg-white shadow-md p-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-6">Cofingurações</h2>
+    <h2 class="text-xl font-bold text-gray-800 mb-6">Configurações adicionais</h2>
     <div class="space-y-2">
-        
-        <div>
-            <label class="block text-gray-700 font-medium mb-2">Status
-                <select class="w-full bg-white border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">Published</option>
-                    <option value="today">Rascunho</option>
-                    <option value="upcoming">Drafit</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-2">Acesso
-                <select class="w-full bg-white border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">Public</option>
-                    <option value="today">Rascunho</option>
-                    <option value="upcoming">Drafit</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-2">Destaque
-                <select class="w-full bg-white border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">Sim</option>
-                    <option value="today">Não</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-2">Idioma
-                <select class="w-full bg-white border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">Português BR</option>
-                    <option value="today">Inglês</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <button type="submit" id="submitBtn"
-                class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition flex justify-center items-center gap-2">
-                <span id="btnText">Agendar</span>
-                <span id="btnLoader"
-                    class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
-            </button>
-        </div>
-
+      <!-- Coloque campos adicionais aqui se necessário -->
     </div>
   </aside>
 </div>
