@@ -26,7 +26,7 @@ EXPOSE 3000
 # Torna os argumentos disponíveis como variáveis de ambiente
 ENV DB_NAME=${DB_NAME}
 ENV DB_USER=${DB_USER}
-ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_PASSWORD=${DB_PASSWORD} 
 ENV DB_HOST=${DB_HOST}
 ENV DB_PORT=${DB_PORT}
 
