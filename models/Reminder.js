@@ -39,5 +39,4 @@ const Reminder = db.define('Reminder', {
 Reminder.belongsTo(User); 
 User.hasMany(Reminder);  
 
-
 module.exports = Reminder;
