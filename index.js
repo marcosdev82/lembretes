@@ -2,13 +2,11 @@ require('dotenv').config(); // <- Isto é essencial para ler o .env
 
 const config = require('./config');
 const express = require('express');
-const { engine } = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const flash = require('connect-flash');
-const Handlebars = require('handlebars');
 const HelperPagination = require('./helpers/pagination');
-
 
 const app = express();
 
@@ -27,10 +25,18 @@ const authRoutes = require('./routes/authRoutes');
 const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
 
-// Template engine
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
+// ✅ Configura a template engine com helpers
+const hbs = exphbs.create({
+  helpers: {
+    eq: function (a, b) {
+      return a === b;
+    },
+    paginate: HelperPagination,
+  },
+});
 
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 
 // Body parser
 app.use(express.urlencoded({ extended: true }));
@@ -78,13 +84,12 @@ app.get('/', reminderController.showReminders);
 
 // Conexão com o banco
 conn
-  .sync() // use isto em produção
-  // .sync({ force: true }) 
+  .sync()
   .then(() => {
     app.listen(3000, () => {
       console.log('Servidor rodando na porta 3000');
     });
   })
   .catch((err) => {
-    console.error('Erro ao conectar ao banco de dados:', err);  
+    console.error('Erro ao conectar ao banco de dados:', err);
   });
