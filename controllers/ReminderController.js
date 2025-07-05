@@ -116,9 +116,13 @@ module.exports = class ReminderController {
     static async createReminderSave(req, res) {
         const reminder = {
             title: req.body.title,
-            description: req.body.description,  
-            date: req.body.date,                
-            UserId: req.session.userid
+            description: req.body.description,
+            post_content: req.body.post_content || '',
+            date: req.body.date,
+            post_expire: req.body.post_expire || null,
+            post_status: req.body.post_status || 'draft',
+            author: req.session.userid, 
+            UserId: req.session.userid,
         };
 
         try {
@@ -126,13 +130,14 @@ module.exports = class ReminderController {
 
             req.flash('message', 'Lembrete criado com sucesso!');
             req.session.save(() => {
-                // Redirecionar para a área de edição do lembrete
                 res.redirect(`/reminder/edit/${createdReminder.id}`);
             });
         } catch (err) {
-            console.error('Aconteceu um erro:', err);
+            console.error('Aconteceu um erro ao criar o lembrete:', err);
+            res.redirect('/reminder/create'); 
         }
     }
+
 
     static async updateReminder(req, res) {
         const { id } = req.params;
@@ -156,6 +161,9 @@ module.exports = class ReminderController {
             if (reminder.date) {
                 reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
             }
+            
+            console.log('Lembrete encontrado para edição:', reminder);
+
             res.render('reminder/edit', { reminder });
 
         } catch (err) {

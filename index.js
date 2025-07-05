@@ -79,7 +79,7 @@ app.get('/', reminderController.showReminders);
 // Conexão com o banco
 conn
   .sync() // use isto em produção
-   //.sync({ force: true }) 
+  // .sync({ force: true }) 
   .then(() => {
     app.listen(3000, () => {
       console.log('Servidor rodando na porta 3000');
@@ -88,5 +88,3 @@ conn
   .catch((err) => {
     console.error('Erro ao conectar ao banco de dados:', err);  
   });
-
-  
