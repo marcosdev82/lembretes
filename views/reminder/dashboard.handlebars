@@ -30,8 +30,33 @@
                                 <i class="fas fa-trash-alt"></i> Excluir
                             </button>
                         </div>
+                        <div class="flex gap-2 mt-2 md:mt-0">
+                            <a href="/reminder/edit/{{this.id}}" class="...">Editar</a>
+                            <button type="button" class="quick-edit-toggle text-yellow-700 hover:text-white border border-yellow-700 hover:bg-yellow-800 ... flex items-center gap-2"
+                                data-id="{{this.id}}">
+                                <i class="fas fa-pen"></i> Edição rápida
+                            </button>
+                            <button type="button" class="... delete-btn" data-id="{{id}}">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
+                        </div>
+
+                        <!-- Formulário de Edição Rápida (inicialmente escondido) -->
+                        <div class="quick-edit-form hidden mt-4" data-id="{{this.id}}">
+                            <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2">
+                                <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
+                                <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
+                                <input type="date" name="date" value="{{date}}" class="w-full border p-2 rounded">
+                                <div class="flex justify-end gap-2">
+                                    <button type="button" class="cancel-quick-edit bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
                 </li>
+                
             {{/each}}
         </ul>
     {{else}}
