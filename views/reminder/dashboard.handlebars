@@ -29,31 +29,24 @@
                                 data-id="{{id}}">
                                 <i class="fas fa-trash-alt"></i> Excluir
                             </button>
-                        </div>
-                        <div class="flex gap-2 mt-2 md:mt-0">
-                            <a href="/reminder/edit/{{this.id}}" class="...">Editar</a>
-                            <button type="button" class="quick-edit-toggle text-yellow-700 hover:text-white border border-yellow-700 hover:bg-yellow-800 ... flex items-center gap-2"
+                            
+                            <button type="button" class="quick-edit-toggle text-yellow-700 hover:text-white border border-yellow-700 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 flex items-center gap-2 text-white px-4 py-2 rounded hover:bg-red-600"
                                 data-id="{{this.id}}">
                                 <i class="fas fa-pen"></i> Edição rápida
                             </button>
-                            <button type="button" class="... delete-btn" data-id="{{id}}">
-                                <i class="fas fa-trash-alt"></i> Excluir
-                            </button>
                         </div>
-
-                        <!-- Formulário de Edição Rápida (inicialmente escondido) -->
-                        <div class="quick-edit-form hidden mt-4" data-id="{{this.id}}">
-                            <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2">
-                                <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
-                                <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
-                                <input type="date" name="date" value="{{date}}" class="w-full border p-2 rounded">
-                                <div class="flex justify-end gap-2">
-                                    <button type="button" class="cancel-quick-edit bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
-                                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
-                                </div>
-                            </form>
-                        </div>
-
+                    </div>
+                    <!-- Formulário de Edição Rápida (inicialmente escondido) -->
+                    <div class="quick-edit-form hidden mt-4" data-id="{{this.id}}">
+                        <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2">
+                            <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
+                            <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
+                            <input type="date" name="date" value="{{date}}" class="w-full border p-2 rounded">
+                            <div class="flex justify-end gap-2">
+                                <button type="button" class="cancel-quick-edit bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
+                            </div>
+                        </form>
                     </div>
                 </li>
                 
@@ -83,6 +76,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Exclusão já existente
         const deleteModal = document.getElementById('deleteModal');
         const cancelBtn = document.getElementById('cancelDelete');
         const confirmForm = document.getElementById('confirmDeleteForm');
@@ -107,5 +101,32 @@
                 deleteModal.classList.add('hidden');
             }
         });
+
+        // Edição Rápida
+        const toggleButtons = document.querySelectorAll('.quick-edit-toggle');
+        const quickForms = document.querySelectorAll('.quick-edit-form');
+
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+
+                quickForms.forEach(form => {
+                    if (form.getAttribute('data-id') === id) {
+                        form.classList.toggle('hidden');
+                    } else {
+                        form.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Botão de cancelar
+        const cancelButtons = document.querySelectorAll('.cancel-quick-edit');
+        cancelButtons.forEach(cancel => {
+            cancel.addEventListener('click', () => {
+                cancel.closest('.quick-edit-form').classList.add('hidden');
+            });
+        });
     });
 </script>
+
