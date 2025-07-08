@@ -93,6 +93,12 @@ module.exports = class ReminderController {
 
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
 
+            reminders.forEach(reminder => {
+                if (reminder.date) {
+                    reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                }
+            });
+
             res.render('reminder/dashboard', {
                 reminders,
                 currentPage: page,
@@ -161,8 +167,6 @@ module.exports = class ReminderController {
             if (reminder.date) {
                 reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
             }
-            
-            console.log('Lembrete encontrado para edição:', reminder);
 
             res.render('reminder/edit', { reminder });
 
@@ -190,12 +194,20 @@ module.exports = class ReminderController {
                 where: { id }
             });
 
+            if (req.body.quick_edit && req.body.quick_edit === '1') {
+                return req.session.save(() => {
+                    res.redirect('/reminder/dashboard');
+                });
+            }
+
             if (updatedRows === 0) {
                 req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
                 return res.redirect('/reminder/dashboard');
             }
 
             req.flash('message', 'Lembrete atualizado com sucesso!');
+
+
             req.session.save(() => {
                 return res.redirect(`/reminder/edit/${id}`);
             });

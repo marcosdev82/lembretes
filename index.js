@@ -1,4 +1,4 @@
-require('dotenv').config(); // <- Isto é essencial para ler o .env
+require('dotenv').config(); 
 
 const config = require('./config');
 const express = require('express');
@@ -25,7 +25,6 @@ const authRoutes = require('./routes/authRoutes');
 const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
 
-// ✅ Configura a template engine com helpers
 const hbs = exphbs.create({
   helpers: {
     eq: function (a, b) {
