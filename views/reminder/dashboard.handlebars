@@ -20,6 +20,14 @@
                             {{#if date}}<p class="text-sm text-gray-500">Data: {{date}}</p>{{/if}}
                         </div>
 
+                        <div>
+                            {{#if post_status}}
+                                <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full {{#if (eq post_status 'publish')}}bg-green-100 text-green-800{{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-800{{else}}bg-gray-100 text-gray-800{{/if}}">
+                                    {{post_status}}
+                                </span>
+                            {{/if}}
+                        </div>
+
                         <div class="flex gap-2 mt-2 md:mt-0">
                             <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
                                 <i class="fas fa-edit"></i> Editar
