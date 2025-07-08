@@ -168,6 +168,8 @@ module.exports = class ReminderController {
                 reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
             }
 
+            console.log('Reminder to edit:', reminder);
+
             res.render('reminder/edit', { reminder });
 
         } catch (err) {
@@ -187,6 +189,7 @@ module.exports = class ReminderController {
             title: req.body.title,
             description: req.body.description,
             date,
+            post_status: req.body.post_status || 'publish',
         };
         
         try {
