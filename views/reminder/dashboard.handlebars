@@ -46,12 +46,33 @@
                         </div>
                     </div>
 
-                    <div class="quick-edit-form hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
+                    <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
                         <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
+                            
                             <input type="hidden" name="quick_edit" value="1">
+
+                            <label for="post_status" class="block text-gray-700 font-medium">Titulo</label>
                             <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
+
+                            <label for="post_status" class="block text-gray-700 font-medium">Descrição</label>
                             <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
+
+                            <label for="post_date" class="block text-gray-700 font-medium">Data</label>
                             <input type="date" name="date" value="{{dateFormatted}}" class="w-full border p-2 rounded">
+                            
+                            <div>
+                                <label for="post_status" class="block text-gray-700 font-medium">Status</label>
+                                <select 
+                                    id="post_status" 
+                                    name="post_status"
+                                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="draft" {{#if (eq post_status "draft")}}selected{{/if}}>Rascunho</option>
+                                    <option value="published" {{#if (eq post_status "published")}}selected{{/if}}>Publicado</option>
+                                    <option value="pending" {{#if (eq post_status "pending")}}selected{{/if}}>Pendente</option>
+                                    <option value="trashed" {{#if (eq post_status "trashed")}}selected{{/if}}>Lixeira</option>
+                                    <option value="private" {{#if (eq post_status "private")}}selected{{/if}}>Privado</option>
+                                </select>
+                            </div>
 
                             <div class="flex justify-end gap-2">
                                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
@@ -140,4 +161,70 @@
             });
         });
     });
+
+    document.querySelectorAll('.quick-edit-form form').forEach(form => {
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const id = form.action.split('/').pop();
+
+            const data = {
+                title: form.querySelector('input[name="title"]').value,
+                description: form.querySelector('textarea[name="description"]').value,
+                date: form.querySelector('input[name="date"]').value,
+                post_status: form.querySelector('select[name="post_status"]').value,
+                quick_edit: true
+            };
+
+            try {
+                const res = await fetch(`/reminder/edit/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) throw new Error('Erro ao atualizar lembrete');
+
+                const parentLi = form.closest('li');
+
+                const titleEl = parentLi.querySelector('h4');
+                if (titleEl) titleEl.textContent = data.title;
+
+                const descEl = parentLi.querySelector('p.text-gray-600');
+                if (descEl) {
+                    if (data.description) {
+                        descEl.textContent = data.description;
+                    } else {
+                        descEl.remove();
+                    }
+                } else if (data.description) {
+                    const newDesc = document.createElement('p');
+                    newDesc.className = 'text-gray-600';
+                    newDesc.textContent = data.description;
+                    titleEl.insertAdjacentElement('afterend', newDesc);
+                }
+
+                const dateEl = parentLi.querySelector('p.text-sm.text-gray-500');
+            
+                if (dateEl) {
+                    dateEl.textContent = `Data: ${data.date}`;
+                } else if (data.date) {
+                    const newDate = document.createElement('p');
+                    newDate.className = 'text-sm text-gray-500';
+                    newDate.textContent = `Data: ${data.date}`;
+                    parentLi.querySelector('div').appendChild(newDate);
+                }
+
+                // Fecha o formulário
+                form.closest('.quick-edit-form').classList.add('hidden');
+
+            } catch (err) {
+                console.error('Erro na edição rápida:', err);
+                alert('Erro ao salvar. Tente novamente.');
+            }
+        });
+    });
+
 </script>

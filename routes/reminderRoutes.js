@@ -17,3 +17,4 @@ router.post('/remove', checkAuth, ReminderController.removeReminder)
 router.get('/', checkAuth, ReminderController.showReminders);
 
 module.exports = router;
+

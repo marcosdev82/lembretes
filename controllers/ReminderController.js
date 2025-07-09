@@ -180,43 +180,49 @@ module.exports = class ReminderController {
     }
 
     static async updateReminderSave(req, res) {
-        const { id } = req.params;  
+        const { id } = req.params;
+        const isJson = req.headers['content-type']?.includes('application/json');
 
-        const rawDate = req.body.date;
-        const date = parseISO(rawDate); // converte "2025-06-24" em objeto Date
+        let data = req.body;
 
-        const reminder = {
-            title: req.body.title,
-            description: req.body.description,
-            date,
-            post_status: req.body.post_status || 'publish',
-        };
-        
+        if (isJson) {
+            // Certifique-se que o app usa `express.json()` no app.js/middleware
+            data = req.body;
+        }
+
+        const { title, description, post_status, date: rawDate } = data;
+
         try {
-            const [updatedRows] = await Reminder.update(reminder, {
-                where: { id }
-            });
+            const date = parseISO(rawDate);
 
-            if (req.body.quick_edit && req.body.quick_edit === '1') {
-                return req.session.save(() => {
-                    res.redirect('/reminder/dashboard');
-                });
-            }
+            const [updatedRows] = await Reminder.update(
+                { title, description, date, post_status: post_status || 'publish' },
+                { where: { id } }
+            );
 
             if (updatedRows === 0) {
-                req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
+                const msg = 'Lembrete não encontrado ou você não tem permissão.';
+                if (isJson) return res.status(404).json({ success: false, message: msg });
+                req.flash('message', msg);
                 return res.redirect('/reminder/dashboard');
             }
 
+            if (isJson) {
+                return res.json({ success: true });
+            }
+
             req.flash('message', 'Lembrete atualizado com sucesso!');
-
-
             req.session.save(() => {
                 return res.redirect(`/reminder/edit/${id}`);
             });
+
         } catch (err) {
             console.error('Erro ao atualizar lembrete:', err);
-            req.flash('message', 'Erro ao tentar atualizar o lembrete.');
+            const msg = 'Erro ao tentar atualizar o lembrete.';
+
+            if (isJson) return res.status(500).json({ success: false, message: msg });
+
+            req.flash('message', msg);
             req.session.save(() => {
                 res.redirect('/reminder/dashboard');
             });
