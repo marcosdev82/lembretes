@@ -26,7 +26,7 @@ const Reminder = db.define('Reminder', {
         allowNull: true,
     },
     post_status: {
-        type: DataTypes.ENUM('draft', 'published', 'pending', 'trashed', 'private'),
+        type: DataTypes.ENUM('draft', 'published', 'pending'),
         allowNull: true,
         defaultValue: 'draft'
     },
