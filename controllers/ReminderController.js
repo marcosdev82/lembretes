@@ -70,7 +70,6 @@ module.exports = class ReminderController {
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
-            console.log('Search query:', search);
 
             const whereCondition = {
                 UserId: userId,
@@ -167,8 +166,6 @@ module.exports = class ReminderController {
             if (reminder.date) {
                 reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
             }
-
-            console.log('Reminder to edit:', reminder);
 
             res.render('reminder/edit', { reminder });
 
