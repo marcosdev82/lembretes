@@ -116,6 +116,7 @@
         deleteBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.dataset.id;
+                console.log('ID do lembrete a ser excluído:', id);
                 deleteIdInput.value = id;
                 confirmForm.action = '/reminder/remove';
                 deleteModal.classList.remove('hidden');

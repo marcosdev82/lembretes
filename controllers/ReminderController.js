@@ -20,7 +20,10 @@ module.exports = class ReminderController {
             const limit = 2;
             const search = req.query.search || '';
 
-            const whereCondition = { UserId: userId };
+            const whereCondition = {
+                UserId: userId,
+                deletedAt: null // <-- ignora lembretes movidos para lixeira
+            };
 
             if (search) {
                 whereCondition[Op.or] = [
@@ -37,7 +40,7 @@ module.exports = class ReminderController {
                 include: [{ model: User, attributes: ['id', 'name', 'email'] }],
             });
 
-            const showPatination = (total > limit) && true
+            const showPatination = (total > limit);
 
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
             const paginationHtml = renderPagination(page, pages, showPatination, search);
@@ -47,11 +50,11 @@ module.exports = class ReminderController {
                 currentPage: page,
                 totalPages: pages,
                 total,
-                search: search,
+                search,
                 message: req.flash('message'),
-                paginationHtml, // Adiciona a HTML da paginação
+                paginationHtml,
             });
-            
+
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
             req.flash('message', 'Erro ao carregar lembretes.');
@@ -254,8 +257,10 @@ module.exports = class ReminderController {
     }
     
     static async moveToTrash(req, res) {
-        const { id } = req.params;
+        const id = req.body.id;
         const UserId = req.session.userid;
+
+        console.log('ID do lembrete a ser movido para a lixeira:', id);
 
         if (!UserId) {
             req.flash('message', 'Sessão expirada. Faça login novamente.');
