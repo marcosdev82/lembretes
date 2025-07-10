@@ -101,12 +101,25 @@ module.exports = class ReminderController {
                 }
             });
 
+            const deletedCount = await Reminder.count({
+                where: {
+                    UserId: userId,
+                    deletedAt: {
+                        [Op.ne]: null, 
+                    },
+                },
+                paranoid: false,
+            });
+
+            console.log(deletedCount, 'lembretes na lixeira');
+
             res.render('reminder/dashboard', {
                 reminders,
                 currentPage: page,
                 totalPages: pages,
                 total,
                 search: search,
+                deletedCount,
                 message: req.flash('message'),
             });
             

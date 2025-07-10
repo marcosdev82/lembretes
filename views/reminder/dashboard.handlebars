@@ -3,9 +3,20 @@
 
     <div class="flex gap-2 mt-2 md:mt-0">
         <a href="/reminder/add" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
-            Criar lembrete
+            Criar lembrete <i class="fas fa-plus"></i>
         </a>
+
+        {{#if deletedCount}}
+            <a href="#" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
+                <i class="fas fa-trash-alt"></i> Excluídos ({{deletedCount}})
+            </a>
+        {{else}}
+            <a href="#" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
+                <i class="fas fa-trash-alt"></i> Excluídos (0)
+            </a>
+        {{/if}}
     </div>
+
 
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
