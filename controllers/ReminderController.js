@@ -252,5 +252,34 @@ module.exports = class ReminderController {
             });
         }
     }
+    
+    static async moveToTrash(req, res) {
+        const { id } = req.params;
+        const UserId = req.session.userid;
 
+        if (!UserId) {
+            req.flash('message', 'Sessão expirada. Faça login novamente.');
+            return res.redirect('/login');
+        }
+
+        try {
+            const reminder = await Reminder.findOne({
+                where: { id, UserId }
+            });
+
+            if (!reminder) {
+                req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
+                return res.redirect('/reminder/dashboard');
+            }
+
+            await reminder.destroy(); // Marca como deletado (soft delete)
+
+            req.flash('message', 'Lembrete movido para a lixeira!');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        } catch (err) {
+            console.error('Erro ao mover lembrete para a lixeira:', err);
+            req.flash('message', 'Erro ao tentar mover o lembrete para a lixeira.');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        }
+    }   
 }

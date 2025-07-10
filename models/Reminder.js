@@ -1,8 +1,6 @@
 const { DataTypes } = require('sequelize');
 const db = require('../db/conn');
-
 const User = require('./User');
-const { ca } = require('date-fns/locale');
 
 const Reminder = db.define('Reminder', {
     title: {
@@ -30,7 +28,6 @@ const Reminder = db.define('Reminder', {
         allowNull: true,
         defaultValue: 'draft'
     },
-    // Exemplo com Sequelize
     deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -39,6 +36,11 @@ const Reminder = db.define('Reminder', {
         type: DataTypes.INTEGER,
         allowNull: false,
     } 
+}, {
+    paranoid: true,             // Habilita soft delete
+    deletedAt: 'deletedAt',     // Define o campo usado para marcação de exclusão
+    timestamps: true,           // Garante o uso de createdAt e updatedAt
+    tableName: 'Reminders'      // (opcional) define o nome da tabela explicitamente
 });
 
 Reminder.belongsTo(User); 
