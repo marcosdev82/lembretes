@@ -30,6 +30,11 @@ const Reminder = db.define('Reminder', {
         allowNull: true,
         defaultValue: 'draft'
     },
+    // Exemplo com Sequelize
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
     author: {
         type: DataTypes.INTEGER,
         allowNull: false,
