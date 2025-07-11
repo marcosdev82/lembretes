@@ -124,8 +124,9 @@ module.exports = class ReminderController {
                 search,
                 deletedCount,
                 message: req.flash('message'),
-                showDeleted,
+                showDeleted: Boolean(showDeleted), // força conversão
             });
+
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);

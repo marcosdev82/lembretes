@@ -15,26 +15,26 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: node_app
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: db
-      DB_PORT: 3306
-    depends_on:
-      - db
-    volumes:
-      - .:/app
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: node_app
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     DB_NAME: ${DB_NAME}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: db
+  #     DB_PORT: 3306
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - .:/app
 
 volumes:
   db_data:
