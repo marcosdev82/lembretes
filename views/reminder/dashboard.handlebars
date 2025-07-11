@@ -44,31 +44,25 @@
                                     <i class="fas fa-check"></i> Publicar
                                 </a>
                             {{/if}}
-    
-                            {{#if showDeleted}}
 
-                                <a href="/reminder/restore/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                                    <i class="fas fa-edit"></i> Restaurar
-                                </a>
+                            <a href="/reminder/restore/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                                <i class="fas fa-edit"></i> Restaurar
+                            </a>
 
-                            {{else}}
+                            <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
 
-                                <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
+                            <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 delete-btn"
+                                data-id="{{id}}">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
 
-                                <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 delete-btn"
-                                    data-id="{{id}}">
-                                    <i class="fas fa-trash-alt"></i> Excluir
-                                </button>
-
-                                <button type="button"
-                                    class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
-                                    data-id="{{this.id}}">
-                                    <i class="fas fa-pen"></i> Edição rápida
-                                </button>
-
-                            {{/if}}
+                            <button type="button"
+                                class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
+                                data-id="{{this.id}}">
+                                <i class="fas fa-pen"></i> Edição rápida
+                            </button>
 
                         </div>
                     </div>
