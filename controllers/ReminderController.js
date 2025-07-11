@@ -299,5 +299,31 @@ module.exports = class ReminderController {
             req.flash('message', 'Erro ao tentar mover o lembrete para a lixeira.');
             req.session.save(() => res.redirect('/reminder/dashboard'));
         }
-    }   
+    }  
+
+    static async restoreFromTrash(req, res) {
+        const { id } = req.params;
+        const UserId = req.session.userid;
+
+        try {
+            const reminder = await Reminder.findOne({
+                where: { id, UserId },
+                paranoid: false  
+            });
+
+            if (!reminder || !reminder.deletedAt) {
+                req.flash('message', 'Lembrete não encontrado ou não está na lixeira.');
+                return res.redirect('/reminder/dashboard');
+            }
+
+            await reminder.restore();  
+
+            req.flash('message', 'Lembrete restaurado com sucesso!');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        } catch (err) {
+            console.error('Erro ao restaurar lembrete:', err);
+            req.flash('message', 'Erro ao tentar restaurar o lembrete.');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        }
+    }
 }

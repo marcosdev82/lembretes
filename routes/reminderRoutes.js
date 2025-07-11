@@ -14,6 +14,7 @@ router.post('/add', checkAuth, ReminderController.createReminderSave);
 router.get('/edit/:id', checkAuth, ReminderController.updateReminder);
 router.post('/edit/:id', checkAuth, ReminderController.updateReminderSave);
 router.post('/remove', checkAuth, ReminderController.moveToTrash);
+router.get('/deleted', ReminderController.showReminders)
 router.get('/', checkAuth, ReminderController.showReminders);
 
 module.exports = router;
