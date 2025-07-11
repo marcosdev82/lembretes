@@ -7,7 +7,7 @@
         </a>
 
         {{#if deletedCount}}
-            <a href="/reminder/deleted" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
+            <a href="/reminder/dashboard?deleted=true" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
                 <i class="fas fa-trash-alt"></i> Excluídos ({{deletedCount}})
             </a>
         {{else}}
@@ -16,7 +16,6 @@
             </a>
         {{/if}}
     </div>
-
 
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 

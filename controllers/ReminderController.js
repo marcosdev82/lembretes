@@ -73,6 +73,7 @@ module.exports = class ReminderController {
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
+            const showDeleted = req.query.deleted === 'true';
 
             const whereCondition = {
                 UserId: userId,
@@ -85,13 +86,19 @@ module.exports = class ReminderController {
                 ];
             }
 
-            const { docs, pages, total } = await Reminder.paginate({
-                where: whereCondition,
+            // Se mostrar excluídos, busca com paranoid: false e filtrando deletedAt ≠ null
+            const paginateOptions = {
+                where: showDeleted
+                    ? { ...whereCondition, deletedAt: { [Op.ne]: null } }
+                    : whereCondition,
                 order: [['createdAt', 'DESC']],
                 page,
                 paginate: limit,
                 include: [{ model: User, attributes: ['id', 'name', 'email'] }],
-            });
+                paranoid: !showDeleted,
+            };
+
+            const { docs, pages, total } = await Reminder.paginate(paginateOptions);
 
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
 
@@ -104,25 +111,22 @@ module.exports = class ReminderController {
             const deletedCount = await Reminder.count({
                 where: {
                     UserId: userId,
-                    deletedAt: {
-                        [Op.ne]: null, 
-                    },
+                    deletedAt: { [Op.ne]: null },
                 },
                 paranoid: false,
             });
-
-            console.log(deletedCount, 'lembretes na lixeira');
 
             res.render('reminder/dashboard', {
                 reminders,
                 currentPage: page,
                 totalPages: pages,
                 total,
-                search: search,
+                search,
                 deletedCount,
                 message: req.flash('message'),
+                showDeleted,
             });
-            
+
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
             req.flash('message', 'Erro ao carregar lembretes.');
@@ -158,7 +162,6 @@ module.exports = class ReminderController {
             res.redirect('/reminder/create'); 
         }
     }
-
 
     static async updateReminder(req, res) {
         const { id } = req.params;
@@ -290,7 +293,7 @@ module.exports = class ReminderController {
                 return res.redirect('/reminder/dashboard');
             }
 
-            await reminder.destroy(); // Marca como deletado (soft delete)
+            await reminder.destroy(); 
 
             req.flash('message', 'Lembrete movido para a lixeira!');
             req.session.save(() => res.redirect('/reminder/dashboard'));
