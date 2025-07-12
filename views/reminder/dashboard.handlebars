@@ -51,6 +51,11 @@
                 </li>
             {{/each}}
         </ul>
+
+        {{{paginationHtml}}} <!-- Renderiza a HTML da paginação -->
+
+        {{log search}} <!-- Para depuração -->
+
     {{else}}
         <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
     {{/if}}
