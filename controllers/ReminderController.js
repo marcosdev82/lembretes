@@ -70,7 +70,7 @@ module.exports = class ReminderController {
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
-            console.log('Search query:', search);
+            const showDeleted = req.query.deleted === 'true';
 
             const whereCondition = {
                 UserId: userId,
@@ -83,25 +83,50 @@ module.exports = class ReminderController {
                 ];
             }
 
-            const { docs, pages, total } = await Reminder.paginate({
-                where: whereCondition,
+            const paginateOptions = {
+                where: showDeleted
+                    ? { ...whereCondition, deletedAt: { [Op.ne]: null } }
+                    : { ...whereCondition, deletedAt: null },
                 order: [['createdAt', 'DESC']],
                 page,
                 paginate: limit,
                 include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+                paranoid: !showDeleted,
+            };
+
+            const { docs, pages, total } = await Reminder.paginate(paginateOptions);
+
+            const reminders = docs.map(reminder => {
+                const r = reminder.get({ plain: true });
+                if (r.date) {
+                    r.dateFormatted = r.date.toISOString().slice(0, 10);
+                }
+                return r;
             });
 
-            const reminders = docs.map(reminder => reminder.get({ plain: true }));
+            const showPagination = total > limit;
+            const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
+
+            const deletedCount = await Reminder.count({
+                where: {
+                    UserId: userId,
+                    deletedAt: { [Op.ne]: null },
+                },
+                paranoid: false,
+            });
 
             res.render('reminder/dashboard', {
                 reminders,
                 currentPage: page,
                 totalPages: pages,
                 total,
-                search: search,
+                search,
+                deletedCount,
                 message: req.flash('message'),
+                showDeleted: Boolean(showDeleted),
+                paginationHtml,
             });
-            
+
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
             req.flash('message', 'Erro ao carregar lembretes.');
