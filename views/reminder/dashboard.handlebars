@@ -2,6 +2,25 @@
     <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Dashboard</h2>
     <a href="/reminder/add" class="text-blue-500 underline">Criar lembrete</a>
 
+    <!-- Formulário de busca -->
+    <form action="/reminder/dashboard" method="GET" class="my-5">
+        <div class="flex gap-2">
+            <input
+                type="text"
+                name="search"
+                placeholder="Buscar lembretes..."
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                value="{{search}}"
+            />
+            <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+                Buscar
+            </button>
+        </div>
+    </form>
+
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
     {{#if reminders.length}}
@@ -10,7 +29,7 @@
                 <li class="p-4 border rounded-lg shadow-sm">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                         <div>
-                            <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
+                            <h4 class="text-lg f ont-bold text-gray-700">{{title}}</h4>
                             {{#if description}}
                                 <p class="text-gray-600">{{description}}</p>
                             {{/if}}
