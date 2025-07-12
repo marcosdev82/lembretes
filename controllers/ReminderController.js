@@ -127,6 +127,17 @@ module.exports = class ReminderController {
                 showDeleted: Boolean(showDeleted), // força conversão
             });
 
+            console.log('Opções de paginação:', {
+                reminders,
+                currentPage: page,
+                totalPages: pages,
+                total,
+                search,
+                deletedCount,
+                message: req.flash('message'),
+                showDeleted: Boolean(showDeleted), // força conversão
+            });
+
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
@@ -249,11 +260,19 @@ module.exports = class ReminderController {
     static async removeReminder(req, res) {
         const { id } = req.body;
         const UserId = req.session.userid;
+        console.log('ID do lembrete a ser removido:', {
+                where: { id, UserId },
+                force: true // <- Força a exclusão permanente mesmo com paranoid: true
+            });
 
         try {
             const deleted = await Reminder.destroy({
-                where: { id, UserId }
+                where: { id, UserId },
+                force: true 
             });
+
+
+            console.log('Resultado da remoção:', deleted);
 
             if (deleted) {
                 req.flash('message', 'Lembrete removido com sucesso!');
@@ -274,7 +293,7 @@ module.exports = class ReminderController {
     }
     
     static async moveToTrash(req, res) {
-        const id = req.body.id;
+        const id = req.params.id;
         const UserId = req.session.userid;
 
         console.log('ID do lembrete a ser movido para a lixeira:', id);
@@ -294,7 +313,11 @@ module.exports = class ReminderController {
                 return res.redirect('/reminder/dashboard');
             }
 
-            await reminder.destroy(); 
+            // Atualiza o status para "rascunho" antes de deletar (soft delete)
+            await reminder.update({ post_status: 'draft' });
+
+            // Aplica soft delete
+            await reminder.destroy();
 
             req.flash('message', 'Lembrete movido para a lixeira!');
             req.session.save(() => res.redirect('/reminder/dashboard'));
@@ -303,7 +326,8 @@ module.exports = class ReminderController {
             req.flash('message', 'Erro ao tentar mover o lembrete para a lixeira.');
             req.session.save(() => res.redirect('/reminder/dashboard'));
         }
-    }  
+    }
+
 
     static async restoreFromTrash(req, res) {
         const { id } = req.params;
