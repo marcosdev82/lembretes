@@ -86,11 +86,10 @@ module.exports = class ReminderController {
                 ];
             }
 
-            // Se mostrar excluídos, busca com paranoid: false e filtrando deletedAt ≠ null
             const paginateOptions = {
                 where: showDeleted
                     ? { ...whereCondition, deletedAt: { [Op.ne]: null } }
-                    : whereCondition,
+                    : { ...whereCondition, deletedAt: null },
                 order: [['createdAt', 'DESC']],
                 page,
                 paginate: limit,
@@ -100,13 +99,16 @@ module.exports = class ReminderController {
 
             const { docs, pages, total } = await Reminder.paginate(paginateOptions);
 
-            const reminders = docs.map(reminder => reminder.get({ plain: true }));
-
-            reminders.forEach(reminder => {
-                if (reminder.date) {
-                    reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+            const reminders = docs.map(reminder => {
+                const r = reminder.get({ plain: true });
+                if (r.date) {
+                    r.dateFormatted = r.date.toISOString().slice(0, 10);
                 }
+                return r;
             });
+
+            const showPagination = total > limit;
+            const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
 
             const deletedCount = await Reminder.count({
                 where: {
@@ -124,20 +126,9 @@ module.exports = class ReminderController {
                 search,
                 deletedCount,
                 message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
+                showDeleted: Boolean(showDeleted),
+                paginationHtml,
             });
-
-            console.log('Opções de paginação:', {
-                reminders,
-                currentPage: page,
-                totalPages: pages,
-                total,
-                search,
-                deletedCount,
-                message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
-            });
-
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
@@ -145,6 +136,7 @@ module.exports = class ReminderController {
             res.redirect('/login');
         }
     }
+
 
     static createReminder(req, res) {
         res.render('reminder/create');
