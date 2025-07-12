@@ -1,5 +1,6 @@
 <div class="bg-white rounded-lg shadow p-10"> 
     <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Dashboard</h2>
+    
 
     <div class="flex gap-2 mt-2 md:mt-0">
         <a href="/reminder/add" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
@@ -115,6 +116,9 @@
                 </li>
             {{/each}}
         </ul>
+
+        {{{paginationHtml}}} <!-- Renderiza a HTML da paginação -->
+
     {{else}}
         <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
     {{/if}}
