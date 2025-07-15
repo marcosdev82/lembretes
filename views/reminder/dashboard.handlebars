@@ -18,7 +18,7 @@
     {{#if reminders.length}}
         <ul class="space-y-4"> 
             {{#each reminders}}
-                <li class="p-4 border rounded-lg shadow-sm">
+                <li class="p-4 border rounded-lg shadow-sm" data-row-id="{{this.id}}">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                         <div>
                             <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
