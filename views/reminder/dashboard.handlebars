@@ -33,7 +33,7 @@
                                         {{#if (eq post_status 'published')}}bg-green-100 text-green-800
                                         {{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-700
                                         {{else if (eq post_status 'pending')}}bg-orange-100 text-orange-700
-                                        {{else}}bg-gray-100 text-gray-800{{/if}}">
+                                        {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{post_status}}">
                                         {{#if (eq post_status 'draft')}}Rascunho
                                         {{else if (eq post_status 'published')}}Publicado
                                         {{else if (eq post_status 'pending')}}Pendente
