@@ -1,5 +1,6 @@
 <div class="bg-white rounded-lg shadow p-10"> 
     <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Dashboard</h2>
+    
 
     <div class="flex gap-2 mt-2 md:mt-0">
         <a href="/reminder/add" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
@@ -13,6 +14,25 @@
         {{/if}}
     </div>
 
+    <!-- Formulário de busca -->
+    <form action="/reminder/dashboard" method="GET" class="my-5">
+        <div class="flex gap-2">
+            <input
+                type="text"
+                name="search"
+                placeholder="Buscar lembretes..."
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                value="{{search}}"
+            />
+            <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+                Buscar
+            </button>
+        </div>
+    </form>
+
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
     {{#if reminders.length}}
@@ -21,9 +41,13 @@
                 <li class="p-4 border rounded-lg shadow-sm" data-row-id="{{this.id}}">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                         <div>
-                            <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
-                            {{#if description}}<p class="text-gray-600">{{description}}</p>{{/if}}
-                            {{#if date}}<p class="text-sm text-gray-500">Data: {{date}}</p>{{/if}}
+                            <h4 class="text-lg f ont-bold text-gray-700">{{title}}</h4>
+                            {{#if description}}
+                                <p class="text-gray-600">{{description}}</p>
+                            {{/if}}
+                            {{#if date}}
+                                <p class="text-sm text-gray-500">Data: {{date}}</p>
+                            {{/if}}
                         </div>
 
                         <div>
@@ -33,7 +57,7 @@
                                         {{#if (eq post_status 'published')}}bg-green-100 text-green-800
                                         {{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-700
                                         {{else if (eq post_status 'pending')}}bg-orange-100 text-orange-700
-                                        {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{post_status}}">
+                                        {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{this.id}}">
                                         {{#if (eq post_status 'draft')}}Rascunho
                                         {{else if (eq post_status 'published')}}Publicado
                                         {{else if (eq post_status 'pending')}}Pendente
@@ -115,6 +139,11 @@
                 </li>
             {{/each}}
         </ul>
+
+        {{{paginationHtml}}} <!-- Renderiza a HTML da paginação -->
+
+        {{log search}} <!-- Para depuração -->
+
     {{else}}
         <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
     {{/if}}
@@ -208,7 +237,18 @@
                 post_status: form.querySelector('select[name="post_status"]').value,
                 quick_edit: true
             };
+            const li = form.closest('li');
+            const spanStatus = li.querySelector('span[data-status]');
+            const statusAtual = spanStatus ? spanStatus.getAttribute('data-status') : null;
 
+            const novoStatus = form.querySelector('[name="post_status"]').value;
+
+            const bedge = document.querySelector(`[data-status='${statusAtual}']`);
+            console.log(bedge)
+
+            // 4. Exibe no console (ou faz algo com os valores)
+            console.log('Status anterior:', statusAtual);
+            console.log('Novo status enviado:', novoStatus);
             try {
                 const res = await fetch(`/reminder/edit/${id}`, {
                     method: 'POST',
