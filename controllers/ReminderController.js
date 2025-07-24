@@ -187,6 +187,7 @@ module.exports = class ReminderController {
             // Formata a data para input type="date"
             if (reminder.date) {
                 reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+                reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
             }
 
             console.log(reminder.date)
@@ -211,13 +212,26 @@ module.exports = class ReminderController {
             data = req.body;
         }
 
-        const { title, description, post_status, date: rawDate } = data;
+        console.log('teste', data)
+
+        const { title, description, post_status, post_expire, date: rawDate } = data;
+
+        // const reminder = {
+        //     title: req.body.title,
+        //     description: req.body.description,
+        //     post_content: req.body.post_content || '',
+        //     date: req.body.date,
+        //     post_expire: req.body.post_expire || null,
+        //     post_status: req.body.post_status || 'draft',
+        //     author: req.session.userid, 
+        //     UserId: req.session.userid,
+        // };
 
         try {
             const date = parseISO(rawDate);
 
             const [updatedRows] = await Reminder.update(
-                { title, description, date, post_status: post_status || 'publish' },
+                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || '0000-00-00T00:00' },
                 { where: { id } }
             );
 
