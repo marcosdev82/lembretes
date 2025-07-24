@@ -57,13 +57,17 @@
                                         {{#if (eq post_status 'published')}}bg-green-100 text-green-800
                                         {{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-700
                                         {{else if (eq post_status 'pending')}}bg-orange-100 text-orange-700
-                                        {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{post_status}}">
+                                        {{else if (eq post_status 'expired')}}bg-red-100 text-red-700
+                                        {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{this.id}}">
+                                        
                                         {{#if (eq post_status 'draft')}}Rascunho
                                         {{else if (eq post_status 'published')}}Publicado
                                         {{else if (eq post_status 'pending')}}Pendente
+                                        {{else if (eq post_status 'expired')}}Expirado
                                         {{else}}{{post_status}}{{/if}}
                                     </span>
                                 {{/if}}
+
                             {{else}}
                                 <span class="inline-block px-2 py-1 text-xs font-semibold text-gray-500">Sem status</span>
                             {{/if}}
@@ -237,7 +241,19 @@
                 post_status: form.querySelector('select[name="post_status"]').value,
                 quick_edit: true
             };
+            
+            const li = form.closest('li');
+            const spanStatus = li.querySelector('span[data-status]');
+            const statusAtual = spanStatus ? spanStatus.getAttribute('data-status') : null;
 
+            const novoStatus = form.querySelector('[name="post_status"]').value;
+
+            const bedge = document.querySelector(`[data-status='${statusAtual}']`);
+            console.log(bedge)
+
+            // 4. Exibe no console (ou faz algo com os valores)
+            console.log('Status anterior:', statusAtual);
+            console.log('Novo status enviado:', novoStatus);
             try {
                 const res = await fetch(`/reminder/edit/${id}`, {
                     method: 'POST',

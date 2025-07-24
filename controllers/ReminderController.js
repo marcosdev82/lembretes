@@ -4,6 +4,7 @@ const User = require('../models/User');
 const renderPagination = require('../components/pagination');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
+const { formatForDatetimeLocal } = require('../helpers/parseFormat')
 
 sequelizePaginate.paginate(Reminder);
 
@@ -99,10 +100,12 @@ module.exports = class ReminderController {
 
             const { docs, pages, total } = await Reminder.paginate(paginateOptions);
 
-            const reminders = docs.map(reminder => {
-                const r = reminder.get({ plain: true });
-                if (r.date) {
-                    r.dateFormatted = r.date.toISOString().slice(0, 10);
+            const reminders = docs.map(reminder => reminder.get({ plain: true }));
+
+            reminders.forEach(reminder => {
+                if (reminder.date) {
+                    reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+                    reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
                 }
                 return r;
             });
@@ -187,8 +190,11 @@ module.exports = class ReminderController {
 
             // Formata a data para input type="date"
             if (reminder.date) {
-                reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+                reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
             }
+
+            console.log(reminder.date)
 
             res.render('reminder/edit', { reminder });
 
@@ -210,13 +216,26 @@ module.exports = class ReminderController {
             data = req.body;
         }
 
-        const { title, description, post_status, date: rawDate } = data;
+        console.log('teste', data)
+
+        const { title, description, post_status, post_expire, date: rawDate } = data;
+
+        // const reminder = {
+        //     title: req.body.title,
+        //     description: req.body.description,
+        //     post_content: req.body.post_content || '',
+        //     date: req.body.date,
+        //     post_expire: req.body.post_expire || null,
+        //     post_status: req.body.post_status || 'draft',
+        //     author: req.session.userid, 
+        //     UserId: req.session.userid,
+        // };
 
         try {
             const date = parseISO(rawDate);
 
             const [updatedRows] = await Reminder.update(
-                { title, description, date, post_status: post_status || 'publish' },
+                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || '0000-00-00T00:00' },
                 { where: { id } }
             );
 
