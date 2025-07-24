@@ -105,7 +105,7 @@ module.exports = class ReminderController {
 
             reminders.forEach(reminder => {
                 if (reminder.date) {
-                    reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                    reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
                 }
             });
 

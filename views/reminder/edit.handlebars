@@ -38,23 +38,14 @@
 
             <div>
                 <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
-                <input 
-                    type="date" 
-                    id="date" 
-                    step="1"
-                    name="date"
-                    value="{{reminder.dateFormatted}}"
+                <input type="datetime-local" id="date" name="date" value="{{reminder.dateFormatted}}" step="1"
                     class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <div>
-                <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
-                <input 
-                    type="date" 
-                    id="post_expire" 
-                    name="post_expire"
-                    value="{{reminder.post_expireFormatted}}"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
+                    <input type="datetime-local" id="post_expire" name="post_expire" value="{{reminder.dateFormatted}}" step="1"
+                        class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <div>
