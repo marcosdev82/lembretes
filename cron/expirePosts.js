@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { Reminder } = require('../models');
+const { Reminder } = require('../models/Reminder');
 const { Op } = require('sequelize');
 
 // Agenda a tarefa para rodar a cada hora

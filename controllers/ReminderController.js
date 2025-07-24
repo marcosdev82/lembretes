@@ -4,6 +4,7 @@ const User = require('../models/User');
 const renderPagination = require('../components/pagination');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
+const { formatForDatetimeLocal } = require('../helpers/parseFormat')
 
 sequelizePaginate.paginate(Reminder);
 
@@ -195,8 +196,10 @@ module.exports = class ReminderController {
 
             // Formata a data para input type="date"
             if (reminder.date) {
-                reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
             }
+
+            console.log(reminder.date)
 
             res.render('reminder/edit', { reminder });
 
