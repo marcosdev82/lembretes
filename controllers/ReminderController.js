@@ -128,17 +128,6 @@ module.exports = class ReminderController {
                 showDeleted: Boolean(showDeleted), // força conversão
             });
 
-            console.log('Opções de paginação:', {
-                reminders,
-                currentPage: page,
-                totalPages: pages,
-                total,
-                search,
-                deletedCount,
-                message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
-            });
-
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
