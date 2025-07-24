@@ -106,6 +106,7 @@ module.exports = class ReminderController {
             reminders.forEach(reminder => {
                 if (reminder.date) {
                     reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+                    reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
                 }
             });
 
