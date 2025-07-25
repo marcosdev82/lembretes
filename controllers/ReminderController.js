@@ -87,11 +87,10 @@ module.exports = class ReminderController {
                 ];
             }
 
-            // Se mostrar excluídos, busca com paranoid: false e filtrando deletedAt ≠ null
             const paginateOptions = {
                 where: showDeleted
                     ? { ...whereCondition, deletedAt: { [Op.ne]: null } }
-                    : whereCondition,
+                    : { ...whereCondition, deletedAt: null },
                 order: [['createdAt', 'DESC']],
                 page,
                 paginate: limit,
@@ -110,6 +109,9 @@ module.exports = class ReminderController {
                 }
             });
 
+            const showPagination = total > limit;
+            const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
+
             const deletedCount = await Reminder.count({
                 where: {
                     UserId: userId,
@@ -126,9 +128,9 @@ module.exports = class ReminderController {
                 search,
                 deletedCount,
                 message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
+                showDeleted: Boolean(showDeleted),
+                paginationHtml,
             });
-
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
@@ -136,6 +138,7 @@ module.exports = class ReminderController {
             res.redirect('/login');
         }
     }
+
 
     static createReminder(req, res) {
         res.render('reminder/create');
