@@ -23,8 +23,11 @@ module.exports = class ReminderController {
 
             const whereCondition = {
                 UserId: userId,
-                deletedAt: null // <-- ignora lembretes movidos para lixeira
+                deletedAt: null, // <-- ignora lembretes movidos para lixeira
+                // post_status: 'publish'
             };
+
+            whereCondition.post_status = 'published';
 
             if (search) {
                 whereCondition[Op.or] = [
@@ -187,13 +190,17 @@ module.exports = class ReminderController {
 
             const reminder = reminderInstance.get({ plain: true });
 
+            // reminder.dateFormatted_expire = null
+            // reminder.dateFormatted = null
+
             // Formata a data para input type="date"
             if (reminder.date) {
                 reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
-                reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
             }
 
-            console.log(reminder.date)
+            if (reminder.post_expire) {
+                reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
+            }
 
             res.render('reminder/edit', { reminder });
 
@@ -218,6 +225,7 @@ module.exports = class ReminderController {
         console.log('teste', data)
 
         const { title, description, post_status, post_expire, date: rawDate } = data;
+        console.log('teste 2', post_expire)
 
         // const reminder = {
         //     title: req.body.title,
@@ -234,7 +242,7 @@ module.exports = class ReminderController {
             const date = parseISO(rawDate);
 
             const [updatedRows] = await Reminder.update(
-                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || '0000-00-00T00:00' },
+                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || null },
                 { where: { id } }
             );
 
