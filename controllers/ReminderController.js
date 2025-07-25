@@ -107,7 +107,6 @@ module.exports = class ReminderController {
                     reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
                     reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
                 }
-                return r;
             });
 
             const showPagination = total > limit;

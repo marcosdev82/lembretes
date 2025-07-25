@@ -1,9 +1,11 @@
 const cron = require('node-cron');
-const { Reminder } = require('../models/Reminder');
+const Reminder = require('../models/Reminder');
+
 const { Op } = require('sequelize');
 
 // Agenda a tarefa para rodar a cada hora
-cron.schedule('0 * * * *', async () => {
+cron.schedule('1 * * * * *', async () => {
+    console.log('teste cron')
     try {
         const now = new Date();
         await Reminder.update(
@@ -19,4 +21,6 @@ cron.schedule('0 * * * *', async () => {
     } catch (err) {
         console.error('[CRON] Erro ao atualizar lembretes expirados:', err);
     }
+}, {
+    timezone: 'America/Fortaleza'
 });
