@@ -1,26 +1,32 @@
 const cron = require('node-cron');
 const Reminder = require('../models/Reminder');
-
 const { Op } = require('sequelize');
 
-// Agenda a tarefa para rodar a cada hora
-cron.schedule('1 * * * * *', async () => {
-    console.log('teste cron')
+// parametrizar tempo no config
+cron.schedule('* * * * * *', async () => { 
+    console.log('Executando tarefa CRON...');
     try {
         const now = new Date();
-        await Reminder.update(
+
+        const result = await Reminder.update(
             { post_status: 'expired' },
             {
                 where: {
-                    post_expire: { [Op.lt]: now },
-                    post_status: { [Op.ne]: 'expired' }
-                }
+                    post_expire: {
+                        [Op.lt]: now,
+                        [Op.not]: null, 
+                    },
+                    post_status: {
+                        [Op.ne]: 'expired',
+                    },
+                },
             }
         );
-        console.log(`[CRON] Lembretes expirados atualizados às ${now.toISOString()}`);
+
+        console.log(`[CRON] ${result[0]} lembrete(s) expirado(s) às ${now.toISOString()}`);
     } catch (err) {
         console.error('[CRON] Erro ao atualizar lembretes expirados:', err);
     }
 }, {
-    timezone: 'America/Fortaleza'
+    timezone: 'America/Fortaleza', // parametrizar timezone no config
 });
