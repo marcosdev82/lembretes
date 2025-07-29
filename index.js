@@ -7,6 +7,8 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const flash = require('connect-flash');
 const HelperPagination = require('./helpers/pagination');
+const ExpirePost = require('./cron/expirePosts');
+
 
 const app = express();
 

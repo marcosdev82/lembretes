@@ -4,6 +4,7 @@ const User = require('../models/User');
 const renderPagination = require('../components/pagination');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
+const { formatForDatetimeLocal } = require('../helpers/parseFormat')
 
 sequelizePaginate.paginate(Reminder);
 
@@ -22,8 +23,11 @@ module.exports = class ReminderController {
 
             const whereCondition = {
                 UserId: userId,
-                deletedAt: null // <-- ignora lembretes movidos para lixeira
+                deletedAt: null, // <-- ignora lembretes movidos para lixeira
+                // post_status: 'publish'
             };
+
+            whereCondition.post_status = 'published';
 
             if (search) {
                 whereCondition[Op.or] = [
@@ -86,11 +90,10 @@ module.exports = class ReminderController {
                 ];
             }
 
-            // Se mostrar excluídos, busca com paranoid: false e filtrando deletedAt ≠ null
             const paginateOptions = {
                 where: showDeleted
                     ? { ...whereCondition, deletedAt: { [Op.ne]: null } }
-                    : whereCondition,
+                    : { ...whereCondition, deletedAt: null },
                 order: [['createdAt', 'DESC']],
                 page,
                 paginate: limit,
@@ -104,9 +107,13 @@ module.exports = class ReminderController {
 
             reminders.forEach(reminder => {
                 if (reminder.date) {
-                    reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                    reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+                    reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
                 }
             });
+
+            const showPagination = total > limit;
+            const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
 
             const deletedCount = await Reminder.count({
                 where: {
@@ -124,20 +131,9 @@ module.exports = class ReminderController {
                 search,
                 deletedCount,
                 message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
+                showDeleted: Boolean(showDeleted),
+                paginationHtml,
             });
-
-            console.log('Opções de paginação:', {
-                reminders,
-                currentPage: page,
-                totalPages: pages,
-                total,
-                search,
-                deletedCount,
-                message: req.flash('message'),
-                showDeleted: Boolean(showDeleted), // força conversão
-            });
-
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
@@ -145,6 +141,7 @@ module.exports = class ReminderController {
             res.redirect('/login');
         }
     }
+
 
     static createReminder(req, res) {
         res.render('reminder/create');
@@ -193,9 +190,16 @@ module.exports = class ReminderController {
 
             const reminder = reminderInstance.get({ plain: true });
 
+            // reminder.dateFormatted_expire = null
+            // reminder.dateFormatted = null
+
             // Formata a data para input type="date"
             if (reminder.date) {
-                reminder.dateFormatted = reminder.date.toISOString().slice(0, 10);
+                reminder.dateFormatted = formatForDatetimeLocal(reminder.date);
+            }
+
+            if (reminder.post_expire) {
+                reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
             }
 
             res.render('reminder/edit', { reminder });
@@ -218,13 +222,27 @@ module.exports = class ReminderController {
             data = req.body;
         }
 
-        const { title, description, post_status, date: rawDate } = data;
+        console.log('teste', data)
+
+        const { title, description, post_status, post_expire, date: rawDate } = data;
+        console.log('teste 2', post_expire)
+
+        // const reminder = {
+        //     title: req.body.title,
+        //     description: req.body.description,
+        //     post_content: req.body.post_content || '',
+        //     date: req.body.date,
+        //     post_expire: req.body.post_expire || null,
+        //     post_status: req.body.post_status || 'draft',
+        //     author: req.session.userid, 
+        //     UserId: req.session.userid,
+        // };
 
         try {
             const date = parseISO(rawDate);
 
             const [updatedRows] = await Reminder.update(
-                { title, description, date, post_status: post_status || 'publish' },
+                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || null },
                 { where: { id } }
             );
 
