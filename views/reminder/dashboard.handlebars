@@ -35,14 +35,17 @@
 
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
-    <div class="acao-em-maca">
-        <select name="action" id="bulk-action-selector-top">
+    <div class="flex items-center gap-2 mb-4">
+        <select name="action" id="bulk-action-selector-top" class="border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="-1">Ações em massa</option>
             <option value="edit" class="hide-if-no-js">Editar</option>
             <option value="trash">Mover para lixeira</option>
         </select>
-        <input type="submit" id="doaction" class="button action" value="Aplicar">
+        <button type="submit" id="doaction" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            Aplicar
+        </button>
     </div>
+
 
     {{#if reminders.length}}
         <ul class="space-y-4"> 
