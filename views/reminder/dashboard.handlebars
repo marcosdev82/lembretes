@@ -35,11 +35,25 @@
 
     <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
+    <div class="flex items-center gap-2 mb-4">
+        <select name="action" id="bulk-action-selector-top" class="border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="-1">Ações em massa</option>
+            <option value="edit" class="hide-if-no-js">Editar</option>
+            <option value="trash">Mover para lixeira</option>
+        </select>
+        <button type="submit" id="doaction" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            Aplicar
+        </button>
+    </div>
+
+
     {{#if reminders.length}}
         <ul class="space-y-4"> 
             {{#each reminders}}
                 <li class="p-4 border rounded-lg shadow-sm" data-row-id="{{this.id}}">
+                    
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        <input type="checkbox" name="ids" value="{{this.id}}"> 
                         <div>
                             <h4 class="text-lg f ont-bold text-gray-700">{{title}}</h4>
                             {{#if description}}
@@ -107,7 +121,6 @@
                             {{/if}}
                         </div>
                     </div>
-
                     <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
                         <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
                             
