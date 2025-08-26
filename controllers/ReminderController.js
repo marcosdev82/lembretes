@@ -346,7 +346,6 @@ module.exports = class ReminderController {
         }
     }
 
-
     static async restoreFromTrash(req, res) {
         const { id } = req.params;
         const UserId = req.session.userid;
@@ -372,4 +371,45 @@ module.exports = class ReminderController {
             req.session.save(() => res.redirect('/reminder/dashboard'));
         }
     }
+
+    static async moveMultipleToTrash(req, res) {
+        const ids = req.body.ids; // Array de IDs selecionados
+        const UserId = req.session.userid;
+
+        if (!Array.isArray(ids) || ids.length === 0) {
+            req.flash('message', 'Nenhum lembrete selecionado.');
+            return res.redirect('/reminder/dashboard');
+        }
+
+        try {
+            // Busca todos os lembretes pertencentes ao usuário e com os IDs informados
+            const reminders = await Reminder.findAll({
+                where: {
+                    id: { [Op.in]: ids },
+                    UserId,
+                    deletedAt: null
+                }
+            });
+
+            if (reminders.length === 0) {
+                req.flash('message', 'Nenhum lembrete válido encontrado.');
+                return res.redirect('/reminder/dashboard');
+            }
+
+            // Atualiza status e aplica soft delete
+            for (const reminder of reminders) {
+                await reminder.update({ post_status: 'draft' });
+                await reminder.destroy(); // <-- Soft delete, respeita paranoid
+            }
+
+            req.flash('message', `${reminders.length} lembrete(s) movido(s) para a lixeira!`);
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+
+        } catch (err) {
+            console.error('Erro ao mover lembretes para a lixeira:', err);
+            req.flash('message', 'Erro ao mover lembretes para a lixeira.');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        }
+    }
+
 }

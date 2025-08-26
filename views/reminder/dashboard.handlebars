@@ -32,22 +32,22 @@
     </div>
   </form>
 
-  <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
+    <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
-  {{#if reminders.length}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {{#each reminders}}
-        <div class="p-4 border rounded-lg shadow-sm bg-white flex flex-col justify-between" data-row-id="{{this.id}}">
-          <div class="flex flex-col gap-2">
-            <div>
-              <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
-              {{#if description}}
-                <p class="text-gray-600">{{description}}</p>
-              {{/if}}
-              {{#if date}}
-                <p class="text-sm text-gray-500">Data: {{date}}</p>
-              {{/if}}
-            </div>
+    {{#if reminders.length}}
+        <ul class="space-y-4"> 
+            {{#each reminders}}
+                <li class="p-4 border rounded-lg shadow-sm" data-row-id="{{this.id}}">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        <div>
+                            <h4 class="text-lg f ont-bold text-gray-700">{{title}}</h4>
+                            {{#if description}}
+                                <p class="text-gray-600">{{description}}</p>
+                            {{/if}}
+                            {{#if date}}
+                                <p class="text-sm text-gray-500">Data: {{date}}</p>
+                            {{/if}}
+                        </div>
 
             <div>
               {{#if post_status}}
@@ -69,30 +69,45 @@
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-2 mt-4">
-            {{#if deletedAt}}
-              <a href="/reminder/restore/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-trash-restore"></i> Restaurar
-              </a>
-              <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 delete-btn" data-id="{{id}}">
-                <i class="fas fa-trash-alt"></i> Excluir permanentemente
-              </button>
-            {{else}}
-              <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-edit"></i> Editar
-              </a>
-              <a href="/reminder/trash/{{this.id}}" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-trash-alt"></i> Excluir
-              </a>
-              <button type="button" class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white" data-id="{{this.id}}">
-                <i class="fas fa-pen"></i> Edição rápida
-              </button>
-            {{/if}}
-          </div>
+                        <div class="flex gap-2 mt-2 md:mt-0">
 
-          <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
-            <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
-              <input type="hidden" name="quick_edit" value="1">
+                            {{#if deletedAt}}
+                                <a href="/reminder/restore/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                                    <i class="fas fa-trash-restore"></i> Restaurar
+                                </a>
+
+                                <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 delete-btn"
+                                    data-id="{{id}}">
+                                    <i class="fas fa-trash-alt"></i> Excluir permantentemente
+                                </button>
+                            {{else}}
+                                <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+
+                                <a href="/reminder/trash/{{this.id}}" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </a>
+
+                                {{!-- 
+                                <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2"
+                                    data-id="{{id}}">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </button> --}}
+
+                                <button type="button"
+                                    class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
+                                    data-id="{{this.id}}">
+                                    <i class="fas fa-pen"></i> Edição rápida
+                                </button>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
+                        <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
+                            
+                            <input type="hidden" name="quick_edit" value="1">
 
               <label for="post_status" class="block text-gray-700 font-medium">Título</label>
               <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
