@@ -3,7 +3,7 @@ const Reminder = require('../models/Reminder');
 const { Op } = require('sequelize');
 
 // parametrizar tempo no config
-cron.schedule('* * * * * *', async () => { 
+cron.schedule('1 * * * * *', async () => { 
     console.log('Executando tarefa CRON...');
     try {
         const now = new Date();

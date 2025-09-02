@@ -1,0 +1,17 @@
+[33m2dc292e[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m HEAD@{0}: commit (merge): Merge branch 'develop' of https://github.com/marcosdev82/lembretes into develop
+[33m7df71af[m HEAD@{1}: commit: Listando em forma de card
+[33m15148c9[m HEAD@{2}: pull: Merge made by the 'ort' strategy.
+[33m709225f[m HEAD@{3}: checkout: moving from main to develop
+[33m4c3ddf6[m[33m ([m[1;32mmain[m[33m)[m HEAD@{4}: commit: ajustes
+[33m57479e3[m HEAD@{5}: checkout: moving from develop to main
+[33m709225f[m HEAD@{6}: checkout: moving from develop to develop
+[33m709225f[m HEAD@{7}: checkout: moving from main to develop
+[33m57479e3[m HEAD@{8}: merge develop: Merge made by the 'ort' strategy.
+[33me4da23f[m HEAD@{9}: pull origin main: Fast-forward
+[33mb2aedf3[m HEAD@{10}: checkout: moving from develop to main
+[33m709225f[m HEAD@{11}: commit: WIP: alterações temporárias do Marquin
+[33m3c58f2f[m HEAD@{12}: reset: moving to HEAD
+[33m3c58f2f[m HEAD@{13}: pull: Fast-forward
+[33m3bbe414[m HEAD@{14}: pull origin develop: Fast-forward
+[33md6f749e[m HEAD@{15}: checkout: moving from main to develop
+[33mb2aedf3[m HEAD@{16}: clone: from https://github.com/marcosdev82/lembretes.git
