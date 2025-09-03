@@ -44,7 +44,9 @@
             <option value="draft">Rascunho</option>
             <option value="published">Publicado</option>
             <option value="pending">Pendente</option>
+            <option value="scheduled">Agendado</option>
           </select>
+
         </div>
 
         <button type="submit" id="submitBtn"
@@ -76,4 +78,34 @@
       loader.classList.remove('hidden');
     });
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('submitBtn');
+    const loader = document.getElementById('btnLoader');
+    const text = document.getElementById('btnText');
+    const dateInput = document.getElementById('date');
+    const statusSelect = document.getElementById('post_status');
+
+    btn.addEventListener('click', function (e) {
+
+      const selectedDate = new Date(dateInput.value);
+      const now = new Date();
+
+      if (dateInput.value && selectedDate > now) {
+
+        let option = [...statusSelect.options].find(o => o.value === "scheduled");
+
+        if (!option) {
+          option = new Option("Agendado", "scheduled");
+          statusSelect.add(option);
+        }
+
+        statusSelect.value = "scheduled";
+      }
+
+      text.classList.add('hidden');
+      loader.classList.remove('hidden');
+    });
+  });
 </script>
+
