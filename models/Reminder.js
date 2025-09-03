@@ -24,7 +24,7 @@ const Reminder = db.define('Reminder', {
         allowNull: true,
     },
     post_status: {
-        type: DataTypes.ENUM('draft', 'published', 'pending', 'expired'),
+        type: DataTypes.ENUM('draft', 'published', 'pending', 'expired', 'scheduled'),
         allowNull: true,
         defaultValue: 'draft'
     },
@@ -39,7 +39,7 @@ const Reminder = db.define('Reminder', {
 }, {
     paranoid: true,             // Habilita soft delete
     deletedAt: 'deletedAt',     // Define o campo usado para marcação de exclusão
-    timestamps: true,           // Garante o uso de createdAt e updatedAt
+    timestamps: true,           // Garante o uso de createdAt e updatedAt 
     tableName: 'Reminders'      // (opcional) define o nome da tabela explicitamente
 });
 

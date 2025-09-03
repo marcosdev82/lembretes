@@ -111,6 +111,7 @@ module.exports = class ReminderController {
                     reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
                 }
             });
+            
 
             const showPagination = total > limit;
             const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
@@ -202,6 +203,8 @@ module.exports = class ReminderController {
                 reminder.dateFormatted_expire = formatForDatetimeLocal(reminder.post_expire);
             }
 
+            console.log(reminder)
+
             res.render('reminder/edit', { reminder });
 
         } catch (err) {
@@ -288,7 +291,6 @@ module.exports = class ReminderController {
                 where: { id, UserId },
                 force: true 
             });
-
 
             console.log('Resultado da remoção:', deleted);
 
