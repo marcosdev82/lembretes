@@ -68,6 +68,9 @@
   </aside>
 </div>
 <script>
+
+console.log(formatDateBR(new Date())); // Ex: 04/09/2025 17:55:33
+
   document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('submitBtn');
     const loader = document.getElementById('btnLoader');
@@ -86,13 +89,12 @@
     const dateInput = document.getElementById('date');
     const statusSelect = document.getElementById('post_status');
 
-    btn.addEventListener('click', function (e) {
+    dateInput.addEventListener('change', function (e) {
 
       const selectedDate = new Date(dateInput.value);
-      const now = new Date();
+      let now = new Date();
 
       if (dateInput.value && selectedDate > now) {
-
         let option = [...statusSelect.options].find(o => o.value === "scheduled");
 
         if (!option) {
@@ -103,9 +105,14 @@
         statusSelect.value = "scheduled";
       }
 
-      text.classList.add('hidden');
-      loader.classList.remove('hidden');
     });
+  
+    statusSelect.addEventListener('change', function (e) {
+      if (e.target.value === 'published' ) {
+          let now = new Date();
+      }
+    })
+    
   });
 </script>
 
