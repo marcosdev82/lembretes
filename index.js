@@ -22,6 +22,7 @@ const User = require('./models/User');
 // Rotas
 const reminderRoutes = require('./routes/reminderRoutes');
 const authRoutes = require('./routes/authRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
 
 // Controllers
 const reminderController = require('./controllers/ReminderController');
@@ -81,6 +82,7 @@ app.use(express.static('public'));
 // Rotas
 app.use('/reminder', reminderRoutes);
 app.use('/', authRoutes);
+app.use('/', settingsRoutes);
 app.get('/', reminderController.showReminders);
 
 // Conexão com o banco

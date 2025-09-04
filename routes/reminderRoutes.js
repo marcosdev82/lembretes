@@ -6,6 +6,7 @@ const ReminderController = require('../controllers/ReminderController');
 // helper
 const checkAuth = require('../helpers/auth').checkAuth;
 
+
 // Rotas
 router.get('/dashboard', checkAuth, ReminderController.dashboard);
 router.get('/home', checkAuth, ReminderController.showReminders);

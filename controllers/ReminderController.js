@@ -10,60 +10,17 @@ sequelizePaginate.paginate(Reminder);
 
 module.exports = class ReminderController {
     static async showReminders(req, res) {
-        if (!req.session.userid) {
-            req.flash('message', 'Sessão expirada. Faça login novamente.');
-            return res.redirect('/login');
-        }
-
-        try {
-            const userId = req.session.userid;
-            const page = parseInt(req.query.page) || 1;
-            const limit = 2;
-            const search = req.query.search || '';
-
-            const whereCondition = {
-                UserId: userId,
-                deletedAt: null, // <-- ignora lembretes movidos para lixeira
-                // post_status: 'publish'
-            };
-
-            whereCondition.post_status = 'published';
-
-            if (search) {
-                whereCondition[Op.or] = [
-                    { title: { [Op.like]: `%${search}%` } },
-                    { description: { [Op.like]: `%${search}%` } },
-                ];
-            }
-
-            const { docs, pages, total } = await Reminder.paginate({
-                where: whereCondition,
-                order: [['createdAt', 'DESC']],
-                page,
-                paginate: limit,
-                include: [{ model: User, attributes: ['id', 'name', 'email'] }],
-            });
-
-            const showPatination = (total > limit);
-
-            const reminders = docs.map(reminder => reminder.get({ plain: true }));
-            const paginationHtml = renderPagination(page, pages, showPatination, search);
-
-            res.render('reminder/home', {
-                reminders,
-                currentPage: page,
-                totalPages: pages,
-                total,
-                search,
-                message: req.flash('message'),
-                paginationHtml,
-            });
-
-        } catch (err) {
-            console.error('Erro ao carregar lembretes:', err);
-            req.flash('message', 'Erro ao carregar lembretes.');
-            res.redirect('/login');
-        }
+        // Dashboard principal
+        const User = require('../models/User');
+        const Reminder = require('../models/Reminder');
+        const userCount = await User.count();
+        const reminderCount = await Reminder.count();
+        const expiredCount = await Reminder.count({ where: { post_status: 'expired' } });
+        res.render('reminder/home', {
+            userCount,
+            reminderCount,
+            expiredCount,
+        });
     }
 
     static async dashboard(req, res) {
