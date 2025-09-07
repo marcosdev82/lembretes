@@ -149,18 +149,29 @@ module.exports = class ReminderController {
     }
 
     static async createReminderSave(req, res) {
-        const reminder = {
-            title: req.body.title,
-            description: req.body.description,
-            post_content: req.body.post_content || '',
-            date: req.body.date,
-            post_expire: req.body.post_expire || null,
-            post_status: req.body.post_status || 'draft',
-            author: req.session.userid, 
-            UserId: req.session.userid,
-        };
-
         try {
+            let date;
+
+            if (req.body.date) {
+                // tenta converter a data enviada
+                const parsedDate = parseISO(req.body.date);
+                date = isValid(parsedDate) ? parsedDate : new Date();
+            } else {
+                // se não veio nada → usa a data atual
+                date = new Date();
+            }
+
+            const reminder = {
+                title: req.body.title,
+                description: req.body.description,
+                post_content: req.body.post_content || '',
+                date, // sempre terá valor válido aqui
+                post_expire: req.body.post_expire || null,
+                post_status: req.body.post_status || 'draft',
+                author: req.session.userid,
+                UserId: req.session.userid,
+            };
+
             const createdReminder = await Reminder.create(reminder);
 
             req.flash('message', 'Lembrete criado com sucesso!');
@@ -169,7 +180,7 @@ module.exports = class ReminderController {
             });
         } catch (err) {
             console.error('Aconteceu um erro ao criar o lembrete:', err);
-            res.redirect('/reminder/create'); 
+            res.redirect('/reminder/create');
         }
     }
 
@@ -225,27 +236,26 @@ module.exports = class ReminderController {
             data = req.body;
         }
 
-        console.log('teste', data)
-
         const { title, description, post_status, post_expire, date: rawDate } = data;
-        console.log('teste 2', post_expire)
-
-        // const reminder = {
-        //     title: req.body.title,
-        //     description: req.body.description,
-        //     post_content: req.body.post_content || '',
-        //     date: req.body.date,
-        //     post_expire: req.body.post_expire || null,
-        //     post_status: req.body.post_status || 'draft',
-        //     author: req.session.userid, 
-        //     UserId: req.session.userid,
-        // };
 
         try {
-            const date = parseISO(rawDate);
+            let date;
+
+            if (rawDate) {
+                const parsedDate = parseISO(rawDate);
+                date = isValid(parsedDate) ? parsedDate : new Date();
+            } else {
+                date = new Date(); // se não veio nada, usa agora
+            }
 
             const [updatedRows] = await Reminder.update(
-                { title, description, date, post_status: post_status || 'publish', post_expire: post_expire || null },
+                {
+                    title,
+                    description,
+                    date,
+                    post_status: post_status || 'draft',
+                    post_expire: post_expire || null,
+                },
                 { where: { id } }
             );
 
