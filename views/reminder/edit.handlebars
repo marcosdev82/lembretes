@@ -1,88 +1,149 @@
 <div class="bg-white rounded-lg shadow p-10"> 
-    <div class="flex gap-2 mt-2 md:mt-0">
-        <a href="/reminder/dashboard" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800 flex items-center gap-2 text-white px-4 py-2 rounded hover:bg-blue-600">Todos</a>
-    </div>
-    <div class="bg-white rounded-lg p-10"> 
+  <div class="flex gap-2 mt-2 md:mt-0">
+    <a href="/reminder/dashboard"
+      class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
+      Todos
+    </a>
+  </div>
 
-        <form action="/reminder/edit/{{reminder.id}}" method="POST" class="max-w-md mx-auto space-y-4">
-            
-            <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Editar lembrete</h2>
-            
-            <div>
-                <label for="title" class="block text-gray-700 font-medium">Título</label>
-                <input 
-                    type="text" 
-                    id="title" 
-                    name="title"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                    placeholder="Digite um título..." value="{{reminder.title}}" />
-            </div>  
+  <div class="bg-white rounded-lg p-10"> 
+    <form id="reminderForm" action="/reminder/edit/{{reminder.id}}" method="POST" class="max-w-md mx-auto space-y-4">
+      <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Editar lembrete</h2>
+      
+      <div>
+        <label for="title" class="block text-gray-700 font-medium">Título</label>
+        <input type="text" id="title" name="title"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          placeholder="Digite um título..." value="{{reminder.title}}" />
+      </div>  
 
-            <div>
-                <label for="description" class="block text-gray-700 font-medium">Descrição</label>
-                <textarea 
-                    rows="3"
-                    id="description" 
-                    name="description"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">{{reminder.description}}</textarea>
-            </div>
+      <div>
+        <label for="description" class="block text-gray-700 font-medium">Descrição</label>
+        <textarea rows="3" id="description" name="description"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">{{reminder.description}}</textarea>
+      </div>
 
-            <div>
-                <label for="post_content" class="block text-gray-700 font-medium">Conteúdo do post</label>
-                <textarea 
-                    rows="4"
-                    id="post_content" 
-                    name="post_content"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">{{reminder.post_content}}</textarea>
-            </div>
+      <div>
+        <label for="post_content" class="block text-gray-700 font-medium">Conteúdo do post</label>
+        <textarea rows="4" id="post_content" name="post_content"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">{{reminder.post_content}}</textarea>
+      </div>
 
-            <div>
-                <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
-                <input type="datetime-local" id="date" name="date" value="{{reminder.dateFormatted}}" step="1"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
+      <div>
+        <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
+        <input type="datetime-local" id="date" name="date" value="{{reminder.dateFormatted}}" step="1"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
 
-            <div>
-                <label for="date" class="block text-gray-700 font-medium">Data que expira</label>
-                    <input type="datetime-local" id="post_expire" name="post_expire" value="{{reminder.dateFormatted_expire}}" step="1"
-                        class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
+      <div id="expireWrapper">
+        <label for="post_expire" class="block text-gray-700 font-medium">Data que expira</label>
+        <input type="datetime-local" id="post_expire" name="post_expire" value="{{reminder.dateFormatted_expire}}" step="1"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
 
-            <div>
-                <label for="post_status" class="block text-gray-700 font-medium">Status</label>
-                <select 
-                    id="post_status" 
-                    name="post_status"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="draft" {{#if (eq reminder.post_status "draft")}}selected{{/if}}>Rascunho</option>
-                    <option value="published" {{#if (eq reminder.post_status "published")}}selected{{/if}}>Publicado</option>
-                    <option value="pending" {{#if (eq reminder.post_status "pending")}}selected{{/if}}>Pendente</option>
-                    <option value="expired" {{#if (eq reminder.post_status "expired")}}selected{{/if}}>Expirado</option>
-                    <option value="scheduled" {{#if (eq reminder.post_status "scheduled")}}selected{{/if}}>Agendado</option>
-                </select>
-            </div>
+      <div>
+        <label for="post_status" class="block text-gray-700 font-medium">Status</label>
+        <select id="post_status" name="post_status"
+          class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="draft" {{#if (eq reminder.post_status "draft")}}selected{{/if}}>Rascunho</option>
+          <option value="published" {{#if (eq reminder.post_status "published")}}selected{{/if}}>Publicado</option>
+          <option value="pending" {{#if (eq reminder.post_status "pending")}}selected{{/if}}>Pendente</option>
+          <option value="expired" {{#if (eq reminder.post_status "expired")}}selected{{/if}}>Expirado</option>
+          <option value="scheduled" {{#if (eq reminder.post_status "scheduled")}}selected{{/if}}>Agendado</option>
+        </select>
+      </div>
 
-            <input type="hidden" name="author" value="{{reminder.author}}" />
+      <input type="hidden" name="author" value="{{reminder.author}}" />
 
-            <button type="submit"
-                id="submitBtn"
-                class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
-                <span id="btnText">Atualizar</span>
-                <span id="btnLoader" class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 inline-block"></span>
-            </button>
-        </form>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const btn = document.getElementById('submitBtn');
-                const loader = document.getElementById('btnLoader');
-                const text = document.getElementById('btnText');
-
-                btn.addEventListener('click', function () {
-                    text.classList.add('hidden');
-                    loader.classList.remove('hidden');
-                });
-            });
-        </script>
-    </div>
+      <button type="submit" id="submitBtn"
+        class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+        <span id="btnText">Atualizar</span>
+        <span id="btnLoader" class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 inline-block"></span>
+      </button>
+    </form>
+  </div>
 </div>
+
+<script>
+  function formatDateForInput(date) {
+    return date.toISOString().slice(0, 16);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById("reminderForm");
+    const btn = document.getElementById('submitBtn');
+    const loader = document.getElementById('btnLoader');
+    const text = document.getElementById('btnText');
+    const dateInput = document.getElementById('date');
+    const expireInput = document.getElementById('post_expire');
+    const expireWrapper = document.getElementById('expireWrapper');
+    const statusSelect = document.getElementById('post_status');
+
+    expireWrapper.classList.add("hidden");
+
+    if (expireInput.value.trim() !== "") {
+        expireWrapper.classList.remove("hidden");
+        statusSelect.value = "scheduled";
+        text.innerText = "Agendar";
+    }
+
+    // Loader
+    btn.addEventListener('click', function () {
+        text.classList.add('hidden');
+        loader.classList.remove('hidden');
+    });
+
+    // Alteração da data principal
+    dateInput.addEventListener('change', function () {
+        const selectedDate = new Date(dateInput.value);
+        const now = new Date();
+
+        if (dateInput.value && selectedDate > now) {
+            statusSelect.value = "scheduled";
+            text.innerText = "Agendar";
+            expireWrapper.classList.remove("hidden");
+            expireInput.min = formatDateForInput(selectedDate);
+        } else {
+            statusSelect.value = "published";
+            text.innerText = "Publicar";
+            expireInput.value = "";
+            expireWrapper.classList.add("hidden");
+        }
+    });
+
+    // Expiração
+    expireInput.addEventListener("change", function () {
+        const expireDate = new Date(expireInput.value);
+        const scheduleDate = new Date(dateInput.value);
+
+        if (expireDate <= scheduleDate) {
+        alert("A data de expiração deve ser maior que a data do agendamento!");
+        expireInput.value = "";
+        }
+    });
+
+    // Validação final no submit
+    form.addEventListener("submit", function (e) {
+        const selectedDate = dateInput.value.trim();
+        const status = statusSelect.value;
+        const expireDate = expireInput.value.trim();
+
+        if (!selectedDate) {
+        e.preventDefault();
+        alert("A data do lembrete não pode estar vazia!");
+        text.classList.remove('hidden');
+        loader.classList.add('hidden');
+        return;
+        }
+
+        if (status === "scheduled" && !expireDate) {
+        e.preventDefault();
+        alert("Para agendar, a data de expiração é obrigatória!");
+        text.classList.remove('hidden');
+        loader.classList.add('hidden');
+        return;
+        }
+    });
+});
+
+</script>

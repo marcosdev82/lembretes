@@ -27,31 +27,31 @@
 
         <div>
           <label for="date" class="block text-gray-700 font-medium">Data do lembrete</label>
-          <input type="datetime-local" id="date" name="date" step="1"
+          <input type="datetime-local" id="date" name="date" value="{{reminder.dateFormatted}}" step="1"
+            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div id="expireWrapper">
+          <label for="post_expire" class="block text-gray-700 font-medium">Data que expira</label>
+          <input type="datetime-local" id="post_expire" name="post_expire" value="{{reminder.dateFormatted_expire}}" step="1"
             class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
         <div>
-          <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
-          <input type="datetime-local" id="post_expire" name="post_expire"
-            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
- 
-        <div>
-          <label for="post_status" class="block text-gray-700 font-medium">Status da publicação</label>
+          <label for="post_status" class="block text-gray-700 font-medium">Status</label>
           <select id="post_status" name="post_status"
             class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-            <option value="pending">Pendente</option>
-            <option value="scheduled">Agendado</option>
+            <option value="draft" {{#if (eq reminder.post_status "draft")}}selected{{/if}}>Rascunho</option>
+            <option value="published" {{#if (eq reminder.post_status "published")}}selected{{/if}}>Publicado</option>
+            <option value="pending" {{#if (eq reminder.post_status "pending")}}selected{{/if}}>Pendente</option>
+            <option value="expired" {{#if (eq reminder.post_status "expired")}}selected{{/if}}>Expirado</option>
+            <option value="scheduled" {{#if (eq reminder.post_status "scheduled")}}selected{{/if}}>Agendado</option>
           </select>
-
         </div>
 
         <button type="submit" id="submitBtn"
           class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition flex justify-center items-center gap-2">
-          <span id="btnText">Salvar</span>
+          <span id="btnText">Publicar</span>
           <span id="btnLoader"
             class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
         </button>
@@ -59,7 +59,7 @@
     </div>
   </main>
 
-  <!-- Sidebar direita (opcional, pode ser usada para tags, categorias, autor, etc.) -->
+  <!-- Sidebar direita -->
   <aside class="w-64 bg-white shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Configurações adicionais</h2>
     <div class="space-y-2">
@@ -67,52 +67,80 @@
     </div>
   </aside>
 </div>
+
 <script>
-
-console.log(formatDateBR(new Date())); // Ex: 04/09/2025 17:55:33
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('submitBtn');
-    const loader = document.getElementById('btnLoader');
-    const text = document.getElementById('btnText');
-
-    btn.addEventListener('click', function () {
-      text.classList.add('hidden');
-      loader.classList.remove('hidden');
-    });
-  });
+  function formatDateForInput(date) {
+    return date.toISOString().slice(0, 16);
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById("reminderForm");
     const btn = document.getElementById('submitBtn');
     const loader = document.getElementById('btnLoader');
     const text = document.getElementById('btnText');
     const dateInput = document.getElementById('date');
+    const expireInput = document.getElementById('post_expire');
+    const expireWrapper = document.getElementById('expireWrapper');
     const statusSelect = document.getElementById('post_status');
 
-    dateInput.addEventListener('change', function (e) {
+    expireWrapper.classList.add("hidden");
 
+    // Loader
+    btn.addEventListener('click', function () {
+      text.classList.add('hidden');
+      loader.classList.remove('hidden');
+    });
+
+    // Alteração da data principal
+    dateInput.addEventListener('change', function () {
       const selectedDate = new Date(dateInput.value);
-      let now = new Date();
+      const now = new Date();
 
       if (dateInput.value && selectedDate > now) {
-        let option = [...statusSelect.options].find(o => o.value === "scheduled");
-
-        if (!option) {
-          option = new Option("Agendado", "scheduled");
-          statusSelect.add(option);
-        }
-
         statusSelect.value = "scheduled";
+        text.innerText = "Agendar";
+        expireWrapper.classList.remove("hidden");
+        expireInput.min = formatDateForInput(selectedDate);
+      } else {
+        statusSelect.value = "published";
+        text.innerText = "Publicar";
+        expireInput.value = "";
+        expireWrapper.classList.add("hidden");
+      }
+    });
+
+    // Expiração
+    expireInput.addEventListener("change", function () {
+      const expireDate = new Date(expireInput.value);
+      const scheduleDate = new Date(dateInput.value);
+
+      if (expireDate <= scheduleDate) {
+        alert("A data de expiração deve ser maior que a data do agendamento!");
+        expireInput.value = "";
+      }
+    });
+
+    // Validação final no submit
+    form.addEventListener("submit", function (e) {
+      const selectedDate = dateInput.value.trim();
+      const status = statusSelect.value;
+      const expireDate = expireInput.value.trim();
+
+      if (!selectedDate) {
+        e.preventDefault();
+        alert("A data do lembrete não pode estar vazia!");
+        text.classList.remove('hidden');
+        loader.classList.add('hidden');
+        return;
       }
 
-    });
-  
-    statusSelect.addEventListener('change', function (e) {
-      if (e.target.value === 'published' ) {
-          let now = new Date();
+      if (status === "scheduled" && !expireDate) {
+        e.preventDefault();
+        alert("Para agendar, a data de expiração é obrigatória!");
+        text.classList.remove('hidden');
+        loader.classList.add('hidden');
+        return;
       }
-    })
-    
+    });
   });
 </script>
-
