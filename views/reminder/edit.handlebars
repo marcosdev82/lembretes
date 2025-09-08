@@ -79,10 +79,10 @@
     const expireWrapper = document.getElementById('expireWrapper');
     const statusSelect = document.getElementById('post_status');
 
-    expireWrapper.classList.add("hidden");
+    //expireWrapper.classList.add("hidden");
 
     if (expireInput.value.trim() !== "") {
-        expireWrapper.classList.remove("hidden");
+        // expireWrapper.classList.remove("hidden");
         statusSelect.value = "scheduled";
         text.innerText = "Agendar";
     }
@@ -101,13 +101,13 @@
         if (dateInput.value && selectedDate > now) {
             statusSelect.value = "scheduled";
             text.innerText = "Agendar";
-            expireWrapper.classList.remove("hidden");
+            //expireWrapper.classList.remove("hidden");
             expireInput.min = formatDateForInput(selectedDate);
         } else {
             statusSelect.value = "published";
             text.innerText = "Publicar";
             expireInput.value = "";
-            expireWrapper.classList.add("hidden");
+            //expireWrapper.classList.add("hidden");
         }
     });
 
