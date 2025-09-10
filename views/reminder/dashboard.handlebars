@@ -92,6 +92,7 @@
             {{/if}}
           </div>
 
+          <!-- quick edit forma -->
           <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
             <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
               <input type="hidden" name="quick_edit" value="1">
@@ -107,11 +108,11 @@
                     class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
               <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
-               <input type="datetime-local" id="post_expire" name="post_expire" value="{{dateFormatted_expire}}" step="1"
+              <input type="datetime-local" id="post_expire" name="post_expire" value="{{dateFormatted_expire}}" step="1"
                         class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-               {{log dateFormatted}}
-               {{log dateFormatted_expire}}
+              {{log dateFormatted}}
+              {{log dateFormatted_expire}}
 
               <label for="post_status" class="block text-gray-700 font-medium">Status</label>
               <select id="post_status" name="post_status" class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -162,6 +163,11 @@
     const deleteIdInput = document.getElementById('deleteIdInput');
     const deleteBtns = document.querySelectorAll('.delete-btn');
 
+    //const dateInput = document.getElementById('date');
+    //const expireInput = document.getElementById('post_expire');
+    //const expireWrapper = document.getElementById('expireWrapper');
+    //const statusSelect = document.getElementById('post_status');
+
     deleteBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
@@ -198,5 +204,26 @@
         btn.closest('.quick-edit-form').classList.add('hidden');
       });
     });
+
+    // Alteração da data principal
+    /**dateInput.addEventListener('change', function () {
+        const selectedDate = new Date(dateInput.value);
+        const now = new Date();
+
+        console.log(selectedDate, 'agora:' + now)
+
+        if (dateInput.value && selectedDate > now) {
+            statusSelect.value = "scheduled";
+            text.innerText = "Agendar";
+            //expireWrapper.classList.remove("hidden");
+            expireInput.min = formatDateForInput(selectedDate);
+        } else {
+            statusSelect.value = "published";
+            text.innerText = "Publicar";
+            expireInput.value = "";
+            //expireWrapper.classList.add("hidden");
+        }
+    });*/
   });
 </script>
+
