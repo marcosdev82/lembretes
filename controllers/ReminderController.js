@@ -2,6 +2,7 @@ const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 const renderPagination = require('../components/pagination');
+const slugify = require('slugify');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
 const { formatForDatetimeLocal } = require('../helpers/parseFormat')
@@ -161,8 +162,15 @@ module.exports = class ReminderController {
                 date = new Date();
             }
 
+            const title =  req.body.title
+
+            const slug = slugify(title, {
+                lower: true,    // deixa tudo minúsculo
+                strict: true    // remove caracteres especiais
+            });
+            
             const reminder = {
-                title: req.body.title,
+                title,
                 description: req.body.description,
                 post_content: req.body.post_content || '',
                 date, // sempre terá valor válido aqui
@@ -236,7 +244,7 @@ module.exports = class ReminderController {
             data = req.body;
         }
 
-        const { title, description, post_status, post_expire, date: rawDate } = data;
+        const { title, slug, description, post_status, post_expire, date: rawDate } = data;
 
         try {
             let date;
@@ -248,9 +256,20 @@ module.exports = class ReminderController {
                 date = new Date(); // se não veio nada, usa agora
             }
 
+            // const title = slugify(title, {
+            //     lower: true,     
+            //     strict: true  
+            // });
+
+            // const slug = slugify(slug, {
+            //     lower: true,    
+            //     strict: true  
+            // });
+
             const [updatedRows] = await Reminder.update(
                 {
                     title,
+                    slug,
                     description,
                     date,
                     post_status: post_status || 'draft',
