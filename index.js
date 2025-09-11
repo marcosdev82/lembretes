@@ -85,7 +85,7 @@ app.get('/', reminderController.showReminders);
 
 // Conexão com o banco
 conn
-  .sync()
+  .sync({ force: false})
   .then(() => {
     app.listen(3000, () => {
       console.log('Servidor rodando na porta 3000');

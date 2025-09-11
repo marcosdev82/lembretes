@@ -171,7 +171,6 @@ module.exports = class ReminderController {
             
             const reminder = {
                 title,
-                slug,
                 description: req.body.description,
                 post_content: req.body.post_content || '',
                 date, // sempre terá valor válido aqui
@@ -257,11 +256,15 @@ module.exports = class ReminderController {
                 date = new Date(); // se não veio nada, usa agora
             }
 
-            if (!slug || slug === reminder.slug) {
-                slug = slugify(title, { lower: true, strict: true });
-            } else {
-                slug = slugify(slug, { lower: true, strict: true });
-            }
+            // const title = slugify(title, {
+            //     lower: true,     
+            //     strict: true  
+            // });
+
+            // const slug = slugify(slug, {
+            //     lower: true,    
+            //     strict: true  
+            // });
 
             const [updatedRows] = await Reminder.update(
                 {
