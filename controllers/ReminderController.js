@@ -2,7 +2,7 @@ const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 const renderPagination = require('../components/pagination');
-const slugify = require('slugify');
+// const slugify = require('slugify');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
 const { formatForDatetimeLocal } = require('../helpers/parseFormat')
@@ -23,12 +23,10 @@ module.exports = class ReminderController {
             const search = req.query.search || '';
 
             const whereCondition = {
-                UserId: userId,
-                deletedAt: null, // <-- ignora lembretes movidos para lixeira
-                // post_status: 'publish'
+                user_id: userId, // <-- corrigido
+                deletedAt: null, // ignora lembretes movidos para lixeira
+                post_status: 'published'
             };
-
-            whereCondition.post_status = 'published';
 
             if (search) {
                 whereCondition[Op.or] = [
@@ -164,10 +162,10 @@ module.exports = class ReminderController {
 
             const title =  req.body.title
 
-            const slug = slugify(title, {
-                lower: true,    // deixa tudo minúsculo
-                strict: true    // remove caracteres especiais
-            });
+            // const slug = slugify(title, {
+            //     lower: true,    // deixa tudo minúsculo
+            //     strict: true    // remove caracteres especiais
+            // });
             
             const reminder = {
                 title,
