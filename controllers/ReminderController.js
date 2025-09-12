@@ -2,7 +2,7 @@ const sequelizePaginate = require('sequelize-paginate');
 const Reminder = require('../models/Reminder');
 const User = require('../models/User');
 const renderPagination = require('../components/pagination');
-// const slugify = require('slugify');
+const slugify = require('slugify');
 const { Op } = require('sequelize'); 
 const { isValid, parseISO } = require('date-fns');
 const { formatForDatetimeLocal } = require('../helpers/parseFormat')
@@ -17,13 +17,13 @@ module.exports = class ReminderController {
         }
 
         try {
-            const userId = req.session.userid;
+            const author = req.session.userid;
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
 
             const whereCondition = {
-                user_id: userId, // <-- corrigido
+                author, // <-- corrigido
                 deletedAt: null, // ignora lembretes movidos para lixeira
                 post_status: 'published'
             };
@@ -46,6 +46,7 @@ module.exports = class ReminderController {
             const showPatination = (total > limit);
 
             const reminders = docs.map(reminder => reminder.get({ plain: true }));
+            
             const paginationHtml = renderPagination(page, pages, showPatination, search);
 
             res.render('reminder/home', {
@@ -72,14 +73,14 @@ module.exports = class ReminderController {
         }
 
         try {
-            const userId = req.session.userid;
+            const author = req.session.userid;
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
             const showDeleted = req.query.deleted === 'true';
 
             const whereCondition = {
-                UserId: userId,
+                author,
             };
 
             if (search) {
@@ -117,7 +118,7 @@ module.exports = class ReminderController {
 
             const deletedCount = await Reminder.count({
                 where: {
-                    UserId: userId,
+                    author,
                     deletedAt: { [Op.ne]: null },
                 },
                 paranoid: false,
@@ -174,8 +175,7 @@ module.exports = class ReminderController {
                 date, // sempre terá valor válido aqui
                 post_expire: req.body.post_expire || null,
                 post_status: req.body.post_status || 'draft',
-                author: req.session.userid,
-                UserId: req.session.userid,
+                author: req.session.userid
             };
 
             const createdReminder = await Reminder.create(reminder);
@@ -307,15 +307,15 @@ module.exports = class ReminderController {
 
     static async removeReminder(req, res) {
         const { id } = req.body;
-        const UserId = req.session.userid;
+        const author = req.session.userid;
         console.log('ID do lembrete a ser removido:', {
-                where: { id, UserId },
+                where: { id, author },
                 force: true // <- Força a exclusão permanente mesmo com paranoid: true
             });
 
         try {
             const deleted = await Reminder.destroy({
-                where: { id, UserId },
+                where: { id, author },
                 force: true 
             });
 
@@ -341,18 +341,18 @@ module.exports = class ReminderController {
     
     static async moveToTrash(req, res) {
         const id = req.params.id;
-        const UserId = req.session.userid;
+        const author = req.session.userid;
 
         console.log('ID do lembrete a ser movido para a lixeira:', id);
 
-        if (!UserId) {
+        if (!author) {
             req.flash('message', 'Sessão expirada. Faça login novamente.');
             return res.redirect('/login');
         }
 
         try {
             const reminder = await Reminder.findOne({
-                where: { id, UserId }
+                where: { id, author }
             });
 
             if (!reminder) {
@@ -377,11 +377,11 @@ module.exports = class ReminderController {
 
     static async restoreFromTrash(req, res) {
         const { id } = req.params;
-        const UserId = req.session.userid;
+        const author = req.session.userid;
 
         try {
             const reminder = await Reminder.findOne({
-                where: { id, UserId },
+                where: { id, author },
                 paranoid: false  
             });
 
@@ -403,7 +403,7 @@ module.exports = class ReminderController {
 
     static async moveMultipleToTrash(req, res) {
         const ids = req.body.ids; // Array de IDs selecionados
-        const UserId = req.session.userid;
+        const author = req.session.userid;
 
         if (!Array.isArray(ids) || ids.length === 0) {
             req.flash('message', 'Nenhum lembrete selecionado.');
@@ -415,7 +415,7 @@ module.exports = class ReminderController {
             const reminders = await Reminder.findAll({
                 where: {
                     id: { [Op.in]: ids },
-                    UserId,
+                    author,
                     deletedAt: null
                 }
             });
