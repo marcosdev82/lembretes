@@ -441,4 +441,46 @@ module.exports = class ReminderController {
         }
     }
 
+    static async duplicateReminder(req, res) {
+        const { id } = req.params;
+        const author = req.session.userid;
+
+        if (!author) {
+            req.flash('message', 'Sessão expirada. Faça login novamente.');
+            return res.redirect('/login');
+        }
+
+        try {
+            // Busca o lembrete original
+            const originalReminder = await Reminder.findOne({
+                where: { id, author }
+            });
+
+            if (!originalReminder) {
+                req.flash('message', 'Lembrete não encontrado ou você não tem permissão.');
+                return res.redirect('/reminder/dashboard');
+            }
+
+            // Cria uma cópia do lembrete
+            const duplicatedReminder = await Reminder.create({
+                title: `${originalReminder.title} (Cópia)`,
+                description: originalReminder.description,
+                post_content: originalReminder.post_content,
+                date: originalReminder.date,
+                post_expire: originalReminder.post_expire,
+                post_status: 'draft', // novo lembrete começa como rascunho
+                author
+            });
+
+            req.flash('message', 'Lembrete duplicado com sucesso!');
+            req.session.save(() => {
+                res.redirect(`/reminder/edit/${duplicatedReminder.id}`);
+            });
+        } catch (err) {
+            console.error('Erro ao duplicar lembrete:', err);
+            req.flash('message', 'Erro ao tentar duplicar o lembrete.');
+            req.session.save(() => res.redirect('/reminder/dashboard'));
+        }
+    }
+
 }
