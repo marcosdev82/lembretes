@@ -18,6 +18,7 @@ router.post('/remove', checkAuth, ReminderController.removeReminder);
 // router.get('/deleted', ReminderController.showReminders)
 router.get('/', checkAuth, ReminderController.showReminders);
 router.get('/restore/:id', checkAuth, ReminderController.restoreFromTrash);
+router.get('/duplicate/:id', checkAuth, ReminderController.duplicateReminder);
 
 module.exports = router;
 
