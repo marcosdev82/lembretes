@@ -124,6 +124,8 @@ module.exports = class ReminderController {
                 paranoid: false,
             });
 
+            console.log('-------------------', showDeleted)
+
             res.render('reminder/dashboard', {
                 reminders,
                 currentPage: page,

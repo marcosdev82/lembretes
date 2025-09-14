@@ -11,6 +11,14 @@
         <i class="fas fa-trash-alt"></i> Excluídos ({{deletedCount}})
       </a>
     {{/if}}
+
+      {{#if showDeleteds}}
+    <form action="/reminder/empty-trash" method="POST">
+      <button type="submit" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2">
+        <i class="fas fa-trash"></i> Esvaziar lixeira
+      </button>
+    </form>
+  {{/if}}
   </div>
 
   <!-- Formulário de busca -->
@@ -86,7 +94,7 @@
               <a href="/reminder/trash/{{this.id}}" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
                 <i class="fas fa-trash-alt"></i> Excluir
               </a>
-              <a href="/reminder/duplicate/{{this.id}}" class="border border-blue-700 text-blue-700 hover:bg-blue-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+              <a href="/reminder/duplicate/{{this.id}}" class="border border-blue-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
                 <i class="fas fa-clone"></i> Duplicar
               </a>
               <button type="button" class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white" data-id="{{this.id}}">

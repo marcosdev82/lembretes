@@ -124,7 +124,6 @@
         const scheduleDate = new Date(dateInput.value);
 
         if (expireDate <= scheduleDate) {
-        alert("A data de expiração deve ser maior que a data do agendamento!");
         expireInput.value = "";
         }
     });
@@ -135,13 +134,7 @@
         const status = statusSelect.value;
         const expireDate = expireInput.value.trim();
 
-        if (!selectedDate) {
-        e.preventDefault();
-        alert("A data do lembrete não pode estar vazia!");
-        text.classList.remove('hidden');
-        loader.classList.add('hidden');
-        return;
-        }
+      
 
         if (status === "scheduled" && !expireDate) {
         e.preventDefault();
