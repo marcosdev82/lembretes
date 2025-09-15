@@ -75,7 +75,7 @@ module.exports = class ReminderController {
         try {
             const author = req.session.userid;
             const page = parseInt(req.query.page) || 1;
-            const limit = 2;
+            const limit = 3;
             const search = req.query.search || '';
             const showDeleted = req.query.deleted === 'true';
 
@@ -114,7 +114,7 @@ module.exports = class ReminderController {
             
 
             const showPagination = total > limit;
-            const paginationHtml = renderPagination(page, pages, showPagination, search, showDeleted);
+            const paginationHtml = renderPagination(page, pages, showPagination, total, search, showDeleted);
 
             const deletedCount = await Reminder.count({
                 where: {
@@ -126,7 +126,7 @@ module.exports = class ReminderController {
 
             console.log('-------------------', showDeleted)
 
-            res.render('reminder/dashboard', {
+            const data = {
                 reminders,
                 currentPage: page,
                 totalPages: pages,
@@ -136,7 +136,11 @@ module.exports = class ReminderController {
                 message: req.flash('message'),
                 showDeleted: Boolean(showDeleted),
                 paginationHtml,
-            });
+            }
+
+            console.log(data)
+
+            res.render('reminder/dashboard', data);
 
         } catch (err) {
             console.error('Erro ao carregar lembretes:', err);
