@@ -155,40 +155,47 @@ module.exports = class ReminderController {
             let date;
 
             if (req.body.date) {
-                // tenta converter a data enviada
                 const parsedDate = parseISO(req.body.date);
-                date = isValid(parsedDate) ? parsedDate : new Date();
-            } else {
-                // se não veio nada → usa a data atual
-                date = new Date();
-            }
+                    date = isValid(parsedDate) ? parsedDate : new Date();
+                } else {
+                    date = new Date();
+                }
 
-            const title =  req.body.title
+                const title = req.body.title;
 
-            // const slug = slugify(title, {
-            //     lower: true,    // deixa tudo minúsculo
-            //     strict: true    // remove caracteres especiais
-            // });
-            
-            const reminder = {
-                title,
-                description: req.body.description,
-                post_content: req.body.post_content || '',
-                date, // sempre terá valor válido aqui
-                post_expire: req.body.post_expire || null,
-                post_status: req.body.post_status || 'draft',
-                author: req.session.userid
-            };
+                let baseSlug = slugify(title, {
+                    lower: true,
+                    strict: true,
+                });
 
-            const createdReminder = await Reminder.create(reminder);
+                let slug = baseSlug;
+                let count = 1;
 
-            req.flash('message', 'Lembrete criado com sucesso!');
-            req.session.save(() => {
+                // 🔎 Verifica se já existe no banco
+                while (await Reminder.findOne({ where: { slug } })) {
+                    slug = `${baseSlug}-${count++}`;
+                }
+
+                const reminder = {
+                    title,
+                    slug,
+                    description: req.body.description,
+                    post_content: req.body.post_content || "",
+                    date,
+                    post_expire: req.body.post_expire || null,
+                    post_status: req.body.post_status || "draft",
+                    author: req.session.userid,
+                };
+
+                const createdReminder = await Reminder.create(reminder);
+
+                req.flash("message", "Lembrete criado com sucesso!");
+                req.session.save(() => {
                 res.redirect(`/reminder/edit/${createdReminder.id}`);
             });
         } catch (err) {
-            console.error('Aconteceu um erro ao criar o lembrete:', err);
-            res.redirect('/reminder/create');
+            console.error("Aconteceu um erro ao criar o lembrete:", err);
+            res.redirect("/reminder/create");
         }
     }
 
@@ -256,15 +263,15 @@ module.exports = class ReminderController {
                 date = new Date(); // se não veio nada, usa agora
             }
 
-            // const title = slugify(title, {
-            //     lower: true,     
-            //     strict: true  
-            // });
+            const title = slugify(title, {
+                lower: true,     
+                strict: true  
+            });
 
-            // const slug = slugify(slug, {
-            //     lower: true,    
-            //     strict: true  
-            // });
+            const slug = slugify(slug, {
+                lower: true,    
+                strict: true  
+            });
 
             const [updatedRows] = await Reminder.update(
                 {
