@@ -1,10 +1,11 @@
-function renderPagination(currentPage, totalPages, showPatination, search) {
+function renderPagination(currentPage, totalPages, showPatination, total, search) {
 
     if (showPatination) { 
     
         let paginationHtml = `<div class="flex gap-2 mt-4">`;
 
         if (currentPage > 1) {
+            paginationHtml += `<a href="?page=1&search=${search}" class="px-3 py-1 bg-gray-200 rounded"><</a>`;
             paginationHtml += `<a href="?page=${currentPage - 1}&search=${search}" class="px-3 py-1 bg-gray-200 rounded">Anterior</a>`;
         }
 
@@ -15,9 +16,12 @@ function renderPagination(currentPage, totalPages, showPatination, search) {
 
         if (currentPage < totalPages) {
             paginationHtml += `<a href="?page=${currentPage + 1}&search=${search}" class="px-3 py-1 bg-gray-200 rounded">Próximo</a>`;
+            paginationHtml += `<a href="?page=${totalPages}&search=${search}" class="px-3 py-1 bg-gray-200 rounded">></a>`;
         }
 
+        paginationHtml += `<div class="flex justify-center items-center"> Mostra de ${currentPage} a ${totalPages} de ${total} entradas</div>`
         paginationHtml += `</div>`;
+        
         return paginationHtml;
     }
 }
