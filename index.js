@@ -23,13 +23,11 @@ const User = require('./models/User');
 const reminderRoutes = require('./routes/reminderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
-const usersRoutes = require('./routes/usersRoutes');
 
 // Controllers
 const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
 const settingsController = require('./controllers/SettingsController');
-const usersController = require('./controllers/UsersController');
  
 
 const hbs = exphbs.create({
@@ -87,7 +85,6 @@ app.use(express.static('public'));
 app.use('/reminder', reminderRoutes);
 app.use('/', authRoutes);
 app.use('/', settingsRoutes);
-app.use('/', usersRoutes);
 app.get('/', reminderController.showReminders);
 
 
