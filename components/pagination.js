@@ -1,5 +1,9 @@
 function renderPagination(currentPage, totalPages, showPatination, total, search) {
 
+    if (search === undefined) {
+        search = ""
+    }
+
     if (showPatination) { 
     
         let paginationHtml = `<div class="flex gap-2 mt-4">`;
