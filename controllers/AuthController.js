@@ -1,5 +1,10 @@
+const sequelizePaginate = require('sequelize-paginate');
 const User = require('../models/User');
+const { Op } = require('sequelize'); 
+const renderPagination = require('../components/pagination');
 const bcrypt = require('bcrypt');
+
+sequelizePaginate.paginate(User);
 
 module.exports = class AuthController {
     static login(req, res) {
@@ -110,47 +115,50 @@ module.exports = class AuthController {
         }
 
         try {
-            const userId = req.session.userid;
             const page = parseInt(req.query.page) || 1;
             const limit = 2;
             const search = req.query.search || '';
 
-            const whereCondition = { UserId: userId };
+            // Inicializa whereCondition
+            const whereCondition = {};
 
+            // Adiciona condições de busca se houver
             if (search) {
                 whereCondition[Op.or] = [
-                    { title: { [Op.like]: `%${search}%` } },
-                    { description: { [Op.like]: `%${search}%` } },
+                    { name: { [Op.like]: `%${search}%` } },
+                    { email: { [Op.like]: `%${search}%` } },
                 ];
             }
 
-            const { docs, pages, total } = await Users.paginate({
+            const { docs, pages, total } = await User.paginate({
                 where: whereCondition,
                 order: [['createdAt', 'DESC']],
                 page,
-                paginate: limit,
-                include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+                paginate: limit
             });
 
-            const showPatination = (total > limit) && true
+            const showPagination = total > limit;
 
-            const reminders = docs.map(users => users.get({ plain: true }));
-            const paginationHtml = renderPagination(page, pages, showPatination, search);
+            const users = docs.map(user => user.get({ plain: true }));
+
+            console.log({ users, pages, total })
+
+            const paginationHtml = renderPagination(page, pages, showPagination, search);
 
             res.render('auth/users', {
-                reminders,
+                users,
                 currentPage: page,
                 totalPages: pages,
                 total,
-                search: search,
+                search,
                 message: req.flash('message'),
                 paginationHtml, // Adiciona a HTML da paginação
             });
-            
+
         } catch (err) {
-            console.error('Erro ao carregar lembretes:', err);
-            req.flash('message', 'Erro ao carregar lembretes.');
-            res.redirect('/login');
+            console.error('Erro ao carregar usuários:', err);
+            req.flash('message', 'Erro ao carregar usuários.');
+            res.redirect('/login'); // Você pode querer redirecionar ou renderizar uma página de erro
         }
     }
     
