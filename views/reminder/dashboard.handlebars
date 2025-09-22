@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow p-10"> 
+<div class="bg-white rounded-lg shadow p-10">
   <h2 class="text-2xl font-bold text-left text-gray-800 mb-6">Dashboard</h2>
 
   <div class="flex gap-2 mt-2 md:mt-0">
@@ -11,224 +11,147 @@
         <i class="fas fa-trash-alt"></i> Excluídos ({{deletedCount}})
       </a>
     {{/if}}
-    
+
+    <button id="btnExcludeAll" type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+      <i class="fas fa-trash"></i> Excluir selecionados
+    </button>
   </div>
 
   <!-- Formulário de busca -->
   <form action="/reminder/dashboard" method="GET" class="my-5">
     <div class="flex gap-2">
-      <input
-        type="text"
-        name="search"
-        placeholder="Buscar lembretes..."
-        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-        value="{{search}}"
-      />
-      <button
-        type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Buscar
-      </button>
+      <input type="text" name="search" placeholder="Buscar lembretes..." class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300" value="{{search}}" />
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Buscar</button>
     </div>
   </form>
 
   <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
   {{#if reminders.length}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {{#each reminders}}
-        <div class="p-4 border rounded-lg shadow-sm bg-white flex flex-col justify-between" data-row-id="{{this.id}}">
-          <div class="flex flex-col gap-2">
-            <div>
-              <h4 class="text-lg font-bold text-gray-700">{{title}}</h4>
-              {{#if description}}
-                <p class="text-gray-600">{{description}}</p>
-              {{/if}}
-              {{#if date}}
-                <p class="text-sm text-gray-500">Data: {{date}}</p>
-              {{/if}}
-            </div>
-
-            <div>
-              {{#if post_status}}
-                <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full
-                  {{#if (eq post_status 'published')}}bg-green-100 text-green-800
-                  {{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-700
-                  {{else if (eq post_status 'pending')}}bg-orange-100 text-orange-700
-                  {{else if (eq post_status 'expired')}}bg-red-100 text-red-700
-                  {{else if (eq post_status 'scheduled')}}bg-green-100 text-green-700
-                  {{else}}bg-gray-100 text-gray-800{{/if}}" data-status="{{this.id}}">
-                  {{#if (eq post_status 'draft')}}Rascunho
-                  {{else if (eq post_status 'published')}}Publicado
-                  {{else if (eq post_status 'pending')}}Pendente
-                  {{else if (eq post_status 'expired')}}Expirado
-                  {{else if (eq post_status 'scheduled')}}Agendado
-                  {{else}}{{post_status}}{{/if}}
-                </span>
-              {{else}}
-                <span class="inline-block px-2 py-1 text-xs font-semibold text-gray-500">Sem status</span>
-              {{/if}}
-            </div>
-          </div>
-
-          <div class="flex flex-wrap gap-2 mt-4">
-            {{#if deletedAt}}
-              <a href="/reminder/restore/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-trash-restore"></i> Restaurar
-              </a>
-              <button type="button" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 delete-btn" data-id="{{id}}">
-                <i class="fas fa-trash-alt"></i> Excluir permanentemente
-              </button>
-            {{else}}
-              <a href="/reminder/edit/{{this.id}}" class="border border-green-700 text-green-700 hover:bg-green-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-edit"></i> Editar
-              </a>
-              <a href="/reminder/trash/{{this.id}}" class="border border-red-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-trash-alt"></i> Excluir
-              </a>
-              <a href="/reminder/duplicate/{{this.id}}" class="border border-blue-700 text-red-700 hover:bg-red-800 hover:text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
-                <i class="fas fa-clone"></i> Duplicar
-              </a>
-              <button type="button" class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white" data-id="{{this.id}}">
-                <i class="fas fa-pen"></i> Edição rápida
-              </button>
-            {{/if}}
-          </div>
-
-          <!-- quick edit forma -->
-          <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
-            <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
-              <input type="hidden" name="quick_edit" value="1">
-
-              <label for="post_status" class="block text-gray-700 font-medium">Título</label>
-              <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
-
-              <label for="description" class="block text-gray-700 font-medium">Descrição</label>
-              <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
-
-              <label for="date" class="block text-gray-700 font-medium">Data</label>
-                <input type="datetime-local" id="date" name="date" value="{{dateFormatted}}" step="1"
-                    class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
-              <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
-              <input type="datetime-local" id="post_expire" name="post_expire" value="{{dateFormatted_expire}}" step="1"
-                        class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
-              {{log dateFormatted}}
-              {{log dateFormatted_expire}}
-
-              <label for="post_status" class="block text-gray-700 font-medium">Status</label>
-              <select id="post_status" name="post_status" class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="draft" {{#if (eq post_status "draft")}}selected{{/if}}>Rascunho</option>
-                <option value="published" {{#if (eq post_status "published")}}selected{{/if}}>Publicado</option>
-                <option value="pending" {{#if (eq post_status "pending")}}selected{{/if}}>Pendente</option>
-                <option value="scheduled" {{#if (eq post_status "scheduled")}}selected{{/if}}>Agendado</option>
-              </select>
-
-              <div class="flex justify-end gap-2">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
-                <button type="button" class="cancel-quick-edit bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
-              </div>
-              
-            </form>
-          </div>
-        </div>
-      {{/each}}
-    </div>
-
-
-    {{{paginationHtml}}} 
-    {{log search}}
+    <form id="bulkDeleteForm" method="POST" action="/reminder/bulk-delete">
+      <table class="min-w-full border border-gray-200 rounded-lg">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left"><input type="checkbox" id="selectAll" class="w-4 h-4"></th>
+            <th class="px-4 py-2 text-left">Título</th>
+            <th class="px-4 py-2 text-left">Descrição</th>
+            <th class="px-4 py-2 text-left">Data</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each reminders}}
+            <tr class="border-t">
+              <td class="px-4 py-2">
+                <input type="checkbox" name="ids[]" value="{{this.id}}" class="bulk-checkbox w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+              </td>
+              <td class="px-4 py-2 font-medium text-gray-700">{{title}}</td>
+              <td class="px-4 py-2 text-gray-600">{{description}}</td>
+              <td class="px-4 py-2 text-sm text-gray-500">{{date}}</td>
+              <td class="px-4 py-2">
+                {{#if post_status}}
+                  <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full
+                    {{#if (eq post_status 'published')}}bg-green-100 text-green-800
+                    {{else if (eq post_status 'draft')}}bg-yellow-100 text-yellow-700
+                    {{else if (eq post_status 'pending')}}bg-orange-100 text-orange-700
+                    {{else if (eq post_status 'expired')}}bg-red-100 text-red-700
+                    {{else if (eq post_status 'scheduled')}}bg-green-100 text-green-700
+                    {{else}}bg-gray-100 text-gray-800{{/if}}">
+                    {{#if (eq post_status 'draft')}}Rascunho
+                    {{else if (eq post_status 'published')}}Publicado
+                    {{else if (eq post_status 'pending')}}Pendente
+                    {{else if (eq post_status 'expired')}}Expirado
+                    {{else if (eq post_status 'scheduled')}}Agendado
+                    {{else}}{{post_status}}{{/if}}
+                  </span>
+                {{else}}
+                  <span class="text-xs font-semibold text-gray-500">Sem status</span>
+                {{/if}}
+              </td>
+              <td class="px-4 py-2 flex gap-2">
+                {{#if deletedAt}}
+                  <a href="/reminder/restore/{{this.id}}" class="text-green-700 hover:bg-green-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                    <i class="fas fa-trash-restore"></i> Restaurar
+                  </a>
+                  <button type="button" class="delete-btn text-red-700 hover:bg-red-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1" data-id="{{this.id}}">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                  </button>
+                {{else}}
+                  <a href="/reminder/edit/{{this.id}}" class="text-green-700 hover:bg-green-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                    <i class="fas fa-edit"></i> Editar
+                  </a>
+                  <a href="/reminder/trash/{{this.id}}" class="text-red-700 hover:bg-red-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                  </a>
+                  <a href="/reminder/duplicate/{{this.id}}" class="text-blue-700 hover:bg-blue-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                    <i class="fas fa-clone"></i> Duplicar
+                  </a>
+                {{/if}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </form>
+    {{{paginationHtml}}}
   {{else}}
     <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
   {{/if}}
-
-
-</div>
-
-<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Deseja realmente excluir este lembrete?</h2>
-    <div class="flex justify-end space-x-4">
-      <button id="cancelDelete" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">Cancelar</button>
-      <form id="confirmDeleteForm" method="POST" action="">
-        <input type="hidden" name="id" id="deleteIdInput" value="">
-        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirmar Exclusão</button>
-      </form>
-    </div>
-  </div>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const deleteModal = document.getElementById('deleteModal');
-    const cancelBtn = document.getElementById('cancelDelete');
-    const confirmForm = document.getElementById('confirmDeleteForm');
-    const deleteIdInput = document.getElementById('deleteIdInput');
-    const deleteBtns = document.querySelectorAll('.delete-btn');
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.bulk-checkbox');
 
-    //const dateInput = document.getElementById('date');
-    //const expireInput = document.getElementById('post_expire');
-    //const expireWrapper = document.getElementById('expireWrapper');
-    //const statusSelect = document.getElementById('post_status');
+    selectAll?.addEventListener('change', () => {
+      checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    });
+    
+    const btnExcludeAll = document.getElementById('btnExcludeAll')
 
+    btnExcludeAll?.addEventListener('click', (e) => {
+      e.preventDefault()
+      const ids = []
+      for (let input of [...checkboxes]){
+        if(input.checked) {
+          ids.push(input.value)
+        }
+      }
+
+      if (ids.length > 0 && confirm("Deseja realmente excluir este lembrete?")) {
+          fetch(`/reminder/trash-all`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ids }) // Enviando o array no corpo da requisição
+          })
+              .then(response => {
+                  if (response.ok) {
+                      location.reload();
+                  } else {
+                      console.error('Erro ao excluir lembretes');
+                  }
+              })
+                  .catch(error => console.error('Erro na requisição:', error));
+          } else {
+              alert("Selecione pelo menos um lembrete para excluir.");
+          }
+      }) 
+    
+
+    /*const deleteBtns = document.querySelectorAll('.delete-btn');
     deleteBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
-        deleteIdInput.value = id;
-        confirmForm.action = '/reminder/remove';
-        deleteModal.classList.remove('hidden');
-      });
-    });
-
-    cancelBtn.addEventListener('click', () => {
-      deleteModal.classList.add('hidden');
-    });
-
-    window.addEventListener('click', e => {
-      if (e.target === deleteModal) {
-        deleteModal.classList.add('hidden');
-      }
-    });
-
-    const toggleButtons = document.querySelectorAll('.quick-edit-toggle');
-    const quickForms = document.querySelectorAll('.quick-edit-form');
-
-    toggleButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        quickForms.forEach(form => {
-          form.classList.toggle('hidden', form.dataset.id !== id);
-        });
-      });
-    });
-
-    document.querySelectorAll('.cancel-quick-edit').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.closest('.quick-edit-form').classList.add('hidden');
-      });
-    });
-
-    // Alteração da data principal
-    /**dateInput.addEventListener('change', function () {
-        const selectedDate = new Date(dateInput.value);
-        const now = new Date();
-
-        console.log(selectedDate, 'agora:' + now)
-
-        if (dateInput.value && selectedDate > now) {
-            statusSelect.value = "scheduled";
-            text.innerText = "Agendar";
-            //expireWrapper.classList.remove("hidden");
-            expireInput.min = formatDateForInput(selectedDate);
-        } else {
-            statusSelect.value = "published";
-            text.innerText = "Publicar";
-            expireInput.value = "";
-            //expireWrapper.classList.add("hidden");
+        if(confirm("Deseja realmente excluir este lembrete?")) {
+          fetch(`/reminder/remove/${id}`, { method: 'POST' })
+            .then(() => location.reload());
         }
-    });*/
+      });
+    });
+    */
   });
 </script>
-

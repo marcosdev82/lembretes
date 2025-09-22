@@ -14,7 +14,6 @@ module.exports = class AuthController {
     static async loginPost(req, res) {
         const { email, password } = req.body;
 
-        // verificar se o usuário existe
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
@@ -25,7 +24,6 @@ module.exports = class AuthController {
             });
         }
 
-        // verificar se a senha está correta
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
@@ -36,7 +34,6 @@ module.exports = class AuthController {
             });
         }
 
-        // inicializar a sessão
         req.session.userid = user.id;
         req.flash('success', 'Login realizado com sucesso!');
 
@@ -52,13 +49,19 @@ module.exports = class AuthController {
     static async registerPost(req, res) {
         const { name, email, password, confirmPassword } = req.body;
 
-        // confirmação de senha
         if (password !== confirmPassword) {
             req.flash('message', 'As senhas não conferem! Tente novamente.');
             return res.render('auth/register', {
                 message: req.flash('message'),
                 name,
+                last_name,
                 email,
+                gender,
+                avatar,
+                bio,
+                phone,
+                birthdate,
+
             });
         }
 

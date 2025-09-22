@@ -388,6 +388,7 @@ module.exports = class ReminderController {
         }
     }
 
+
     static async restoreFromTrash(req, res) {
         const { id } = req.params;
         const author = req.session.userid;
@@ -415,16 +416,16 @@ module.exports = class ReminderController {
     }
 
     static async moveMultipleToTrash(req, res) {
-        const ids = req.body.ids; // Array de IDs selecionados
+        const ids = req.body.ids;  
         const author = req.session.userid;
-
+         
         if (!Array.isArray(ids) || ids.length === 0) {
             req.flash('message', 'Nenhum lembrete selecionado.');
             return res.redirect('/reminder/dashboard');
         }
 
         try {
-            // Busca todos os lembretes pertencentes ao usuário e com os IDs informados
+            
             const reminders = await Reminder.findAll({
                 where: {
                     id: { [Op.in]: ids },
@@ -464,7 +465,7 @@ module.exports = class ReminderController {
         }
 
         try {
-            // Busca o lembrete original
+
             const originalReminder = await Reminder.findOne({
                 where: { id, author }
             });
