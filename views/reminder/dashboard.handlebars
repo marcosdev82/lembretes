@@ -100,6 +100,91 @@
   {{/if}}
 </div>
 
+<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Deseja realmente excluir este lembrete?</h2>
+    <div class="flex justify-end space-x-4">
+      <button id="cancelDelete" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">Cancelar</button>
+      <form id="confirmDeleteForm" method="POST" action="">
+        <input type="hidden" name="id" id="deleteIdInput" value="">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirmar Exclusão</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteModal = document.getElementById('deleteModal');
+    const cancelBtn = document.getElementById('cancelDelete');
+    const confirmForm = document.getElementById('confirmDeleteForm');
+    const deleteIdInput = document.getElementById('deleteIdInput');
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+
+    //const dateInput = document.getElementById('date');
+    //const expireInput = document.getElementById('post_expire');
+    //const expireWrapper = document.getElementById('expireWrapper');
+    //const statusSelect = document.getElementById('post_status');
+
+    deleteBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        deleteIdInput.value = id;
+        confirmForm.action = '/reminder/remove';
+        deleteModal.classList.remove('hidden');
+      });
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      deleteModal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', e => {
+      if (e.target === deleteModal) {
+        deleteModal.classList.add('hidden');
+      }
+    });
+
+    const toggleButtons = document.querySelectorAll('.quick-edit-toggle');
+    const quickForms = document.querySelectorAll('.quick-edit-form');
+
+    toggleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        quickForms.forEach(form => {
+          form.classList.toggle('hidden', form.dataset.id !== id);
+        });
+      });
+    });
+
+    document.querySelectorAll('.cancel-quick-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.quick-edit-form').classList.add('hidden');
+      });
+    });
+
+    // Alteração da data principal
+    /**dateInput.addEventListener('change', function () {
+        const selectedDate = new Date(dateInput.value);
+        const now = new Date();
+
+        console.log(selectedDate, 'agora:' + now)
+
+        if (dateInput.value && selectedDate > now) {
+            statusSelect.value = "scheduled";
+            text.innerText = "Agendar";
+            //expireWrapper.classList.remove("hidden");
+            expireInput.min = formatDateForInput(selectedDate);
+        } else {
+            statusSelect.value = "published";
+            text.innerText = "Publicar";
+            expireInput.value = "";
+            //expireWrapper.classList.add("hidden");
+        }
+    });*/
+  });
+</script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const selectAll = document.getElementById('selectAll');
