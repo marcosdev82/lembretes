@@ -87,6 +87,47 @@
                   <a href="/reminder/duplicate/{{this.id}}" class="text-blue-700 hover:bg-blue-800 hover:text-white px-2 py-1 rounded text-sm flex items-center gap-1">
                     <i class="fas fa-clone"></i> Duplicar
                   </a>
+
+                   <button type="button" class="quick-edit-toggle font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white" data-id="{{this.id}}">
+                    <i class="fas fa-pen"></i> Edição rápida
+                  </button>
+
+
+                  <div class="quick-edit-form quick-edit-form-element hidden mt-4 flex flex-col gap-2" data-id="{{this.id}}">
+                    <form action="/reminder/edit/{{this.id}}" method="POST" class="space-y-2 w-full">
+                      <input type="hidden" name="quick_edit" value="1">
+
+                      <label for="post_status" class="block text-gray-700 font-medium">Título</label>
+                      <input type="text" name="title" value="{{title}}" class="w-full border p-2 rounded" placeholder="Título">
+
+                      <label for="description" class="block text-gray-700 font-medium">Descrição</label>
+                      <textarea name="description" class="w-full border p-2 rounded" placeholder="Descrição">{{description}}</textarea>
+
+                      <label for="date" class="block text-gray-700 font-medium">Data</label>
+                        <input type="datetime-local" id="date" name="date" value="{{dateFormatted}}" step="1"
+                            class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                      <label for="post_expire" class="block text-gray-700 font-medium">Data de expiração</label>
+                      <input type="datetime-local" id="post_expire" name="post_expire" value="{{dateFormatted_expire}}" step="1"
+                                class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                      {{log dateFormatted}}
+                      {{log dateFormatted_expire}}
+
+                      <label for="post_status" class="block text-gray-700 font-medium">Status</label>
+                      <select id="post_status" name="post_status" class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="draft" {{#if (eq post_status "draft")}}selected{{/if}}>Rascunho</option>
+                        <option value="published" {{#if (eq post_status "published")}}selected{{/if}}>Publicado</option>
+                        <option value="pending" {{#if (eq post_status "pending")}}selected{{/if}}>Pendente</option>
+                        <option value="scheduled" {{#if (eq post_status "scheduled")}}selected{{/if}}>Agendado</option>
+                      </select>
+
+                      <div class="flex justify-end gap-2">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Salvar</button>
+                        <button type="button" class="cancel-quick-edit bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                      </div>
+                    </form>
+                  </div>
                 {{/if}}
               </td>
             </tr>
@@ -99,6 +140,91 @@
     <p class="text-gray-500">Nenhum lembrete cadastrado.</p>
   {{/if}}
 </div>
+
+<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Deseja realmente excluir este lembrete?</h2>
+    <div class="flex justify-end space-x-4">
+      <button id="cancelDelete" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">Cancelar</button>
+      <form id="confirmDeleteForm" method="POST" action="">
+        <input type="hidden" name="id" id="deleteIdInput" value="">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirmar Exclusão</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteModal = document.getElementById('deleteModal');
+    const cancelBtn = document.getElementById('cancelDelete');
+    const confirmForm = document.getElementById('confirmDeleteForm');
+    const deleteIdInput = document.getElementById('deleteIdInput');
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+
+    //const dateInput = document.getElementById('date');
+    //const expireInput = document.getElementById('post_expire');
+    //const expireWrapper = document.getElementById('expireWrapper');
+    //const statusSelect = document.getElementById('post_status');
+
+    deleteBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        deleteIdInput.value = id;
+        confirmForm.action = '/reminder/remove';
+        deleteModal.classList.remove('hidden');
+      });
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      deleteModal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', e => {
+      if (e.target === deleteModal) {
+        deleteModal.classList.add('hidden');
+      }
+    });
+
+    const toggleButtons = document.querySelectorAll('.quick-edit-toggle');
+    const quickForms = document.querySelectorAll('.quick-edit-form');
+
+    toggleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        quickForms.forEach(form => {
+          form.classList.toggle('hidden', form.dataset.id !== id);
+        });
+      });
+    });
+
+    document.querySelectorAll('.cancel-quick-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.quick-edit-form').classList.add('hidden');
+      });
+    });
+
+    // Alteração da data principal
+    /**dateInput.addEventListener('change', function () {
+        const selectedDate = new Date(dateInput.value);
+        const now = new Date();
+
+        console.log(selectedDate, 'agora:' + now)
+
+        if (dateInput.value && selectedDate > now) {
+            statusSelect.value = "scheduled";
+            text.innerText = "Agendar";
+            //expireWrapper.classList.remove("hidden");
+            expireInput.min = formatDateForInput(selectedDate);
+        } else {
+            statusSelect.value = "published";
+            text.innerText = "Publicar";
+            expireInput.value = "";
+            //expireWrapper.classList.add("hidden");
+        }
+    });*/
+  });
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
