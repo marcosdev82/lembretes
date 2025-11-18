@@ -175,7 +175,7 @@ module.exports = class ReminderController {
                 let slug = baseSlug;
                 let count = 1;
 
-                // 🔎 Verifica se já existe no banco
+                // Verifica se já existe no banco
                 while (await Reminder.findOne({ where: { slug } })) {
                     slug = `${baseSlug}-${count++}`;
                 }

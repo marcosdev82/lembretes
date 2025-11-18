@@ -2,7 +2,10 @@ const sequelizePaginate = require('sequelize-paginate');
 const User = require('../models/User');
 const { Op } = require('sequelize'); 
 const renderPagination = require('../components/pagination');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const { Resend } = require('resend'); // npm install resend
+const resend = new Resend(process.env.RESEND_KEY);
 
 sequelizePaginate.paginate(User);
 
@@ -11,7 +14,7 @@ module.exports = class AuthController {
         res.render('auth/login');
     }
 
-    static async loginPost(req, res) {
+    static async loginUser(req, res) {
         const { email, password } = req.body;
 
         const user = await User.findOne({ where: { email } });
@@ -35,7 +38,7 @@ module.exports = class AuthController {
         }
 
         req.session.userid = user.id;
-        req.flash('success', 'Login realizado com sucesso!');
+        req.flash('success', 'Seja bem vindo!');
 
         req.session.save(() => {
             res.redirect('/');
@@ -46,7 +49,7 @@ module.exports = class AuthController {
         res.render('auth/register');
     }
 
-    static async registerPost(req, res) {
+    static async registerUser(req, res) {
         const { name, email, password, confirmPassword } = req.body;
 
         if (password !== confirmPassword) {
@@ -56,11 +59,11 @@ module.exports = class AuthController {
                 name,
                 last_name,
                 email,
-                gender,
-                avatar,
-                bio,
-                phone,
-                birthdate,
+                // gender,
+                // avatar,
+                // bio,
+                // phone,
+                // birthdate,
 
             });
         }
@@ -109,6 +112,10 @@ module.exports = class AuthController {
     static logout(req, res) {
         req.session.destroy()
         res.redirect('/login')
+    }
+
+    static forgotPassword(req, res) {
+        res.render('auth/forgot-password');
     }
 
     static async showUsers(req, res) {
