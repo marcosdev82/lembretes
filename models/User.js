@@ -69,11 +69,11 @@ const User = db.define('User', {
   // -------------------------
   // Recuperação de senha
   // -------------------------
-  resetToken: {
+  resetPasswordToken: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  resetTokenExpires: {
+  resetPasswordExpires: {
     type: DataTypes.DATE,
     allowNull: true,
   },
