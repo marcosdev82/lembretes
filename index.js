@@ -8,27 +8,24 @@ const flash = require('connect-flash');
 const HelperPagination = require('./helpers/pagination');
 const ExpirePost = require('./cron/expirePosts');
 
-
 const app = express();
 
-// Conexão com o banco
 const conn = require('./db/conn');
 
-// Models
 const Lembrete = require('./models/Reminder');
 const User = require('./models/User');
+const Media = require('./models/Media');
 
-// Rotas
 const reminderRoutes = require('./routes/reminderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
+const mediaRoutes = require('./routes/mediaRoutes');
 
-// Controllers
 const reminderController = require('./controllers/ReminderController');
 const authControllers = require('./controllers/AuthController');
 const settingsController = require('./controllers/SettingsController');
+const mediaController = require('./controllers/MediaController');
  
-
 const hbs = exphbs.create({
   helpers: {
     eq: function (a, b) {
@@ -84,6 +81,7 @@ app.use(express.static('public'));
 app.use('/reminder', reminderRoutes);
 app.use('/', authRoutes);
 app.use('/', settingsRoutes);
+app.use('/', mediaRoutes);
 app.get('/', reminderController.showReminders);
 
 

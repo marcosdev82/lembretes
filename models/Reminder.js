@@ -11,7 +11,7 @@ const Reminder = db.define('Reminder', {
   slug: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true, // Slug deve ser único
+    unique: true,
   },
   description: {
     type: DataTypes.TEXT,
