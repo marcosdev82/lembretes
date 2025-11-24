@@ -1,4 +1,4 @@
-require('dotenv').config(); // garante que o .env seja carregado
+require('dotenv').config();  
 
 const sequelizePaginate = require('sequelize-paginate');
 const User = require('../models/User');
