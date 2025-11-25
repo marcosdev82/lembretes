@@ -28,11 +28,18 @@
   <h3 class="text-xl font-semibold mt-6 mb-2">Lembretes</h3>
 
   {{#if reminders.length}}
+
     <form id="bulkDeleteForm" method="POST" action="/reminder/bulk-delete">
-      <table class="min-w-full border border-gray-200 rounded-lg">
-        <thead class="bg-gray-100">
+    <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+      <table class="w-full text-sm text-left rtl:text-right text-body">
+        <thead class="text-sm text-body bg-neutral-secondary-medium border-b border-default-medium">
           <tr>
-            <th class="px-4 py-2 text-left"><input type="checkbox" id="selectAll" class="w-4 h-4"></th>
+            <th scope="col" class="p-4">
+                <div class="flex items-center">
+                    <input id="selectAll"  type="checkbox" value="" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
+                    <label for="selectAll" class="sr-only">Table checkbox</label>
+                </div>
+            </th>
             <th class="px-4 py-2 text-left">Título</th>
             <th class="px-4 py-2 text-left">Descrição</th>
             <th class="px-4 py-2 text-left">Data</th>
@@ -42,9 +49,12 @@
         </thead>
         <tbody>
           {{#each reminders}}
-            <tr class="border-t">
-              <td class="px-4 py-2">
-                <input type="checkbox" name="ids[]" value="{{this.id}}" class="bulk-checkbox w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+            <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+              <td class="w-4 p-4">
+                <div class="flex items-center"></div>
+                  <input type="checkbox" name="ids[]" value="{{this.id}}" class="bulk-checkbox w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                  <label for="table-checkbox-39" class="sr-only">Table checkbox</label>
+            </div>
               </td>
               <td class="px-4 py-2 font-medium text-gray-700">{{title}}</td>
               <td class="px-4 py-2 text-gray-600">{{description}}</td>
@@ -133,7 +143,8 @@
             </tr>
           {{/each}}
         </tbody>
-      </table>
+       </table>
+    </div>
     </form>
     {{{paginationHtml}}}
   {{else}}
