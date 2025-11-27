@@ -1,0 +1,13 @@
+<nav class="hidden sm:flex space-x-6">
+    {{#if session.userid }}
+        {{!-- <a href="/reminder/home" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+        <a href="/reminder/dashboard" class="text-gray-700 hover:text-blue-600 font-medium">Lembretes</a>
+        <a href="/media" class="text-gray-700 hover:text-blue-600 font-medium">Mídias</a>
+        <a href="/users" class="text-gray-700 hover:text-blue-600 font-medium">Usuários</a> --}}
+        <a href="/settings" class="text-gray-700 hover:text-blue-600 font-medium">Configurações</a>
+        <a href="/logout" class="text-red-600 hover:text-red-800 font-medium">Sair</a>
+    {{else}}
+        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
+        <a href="/register" class="text-blue-600 hover:text-blue-800 font-medium">Registrar</a>
+    {{/if}}
+</nav>
